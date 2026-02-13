@@ -38,7 +38,7 @@ export default function OfficesSection() {
           max-width: 1400px;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: repeat(5, 1fr);
+          grid-template-columns: repeat(3, 1fr);
           gap: 20px;
         }
 
@@ -123,7 +123,7 @@ export default function OfficesSection() {
             padding: 65px 5%;
           }
           .offices-grid {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 18px;
           }
           .office-card {
@@ -344,48 +344,21 @@ export default function OfficesSection() {
         </div>
 
         <div className="office-card">
-          <div className="office-title">BANGALORE · INDIA</div>
+          <div className="office-title">DUBAI · UAE</div>
           <p>
-            91springboard, 4th Floor,<br />
-            Residency Road, MG Road,<br />
-            Bengaluru – 560025
+            Business Bay,<br />
+            Dubai, United Arab Emirates
           </p>
-          <p>info@sagarsoft.in</p>
+          <p>info@sagarsoft.ae</p>
         </div>
 
         <div className="office-card">
-          <div className="office-title">NEW YORK · USA</div>
+          <div className="office-title">RALEIGH · NORTH CAROLINA</div>
           <p>
-            113-25 Queens Blvd, Suite<br />
-            #114 & #116, Forest Hills, NY 11375
+            Raleigh,<br />
+            North Carolina, USA
           </p>
-          <p>Phone: +1 718-746-3860</p>
           <p>info@sagarsoft.com</p>
-        </div>
-
-        <div className="office-card">
-          <div className="office-title">CONNECTICUT · USA</div>
-          <p>
-            Sagarsoft Inc<br />
-            200 Glastonbury Blvd, Suite #304,<br />
-            Glastonbury, CT 06033
-          </p>
-          <p>Phone: +1 860-633-2025</p>
-          <p>info@sagarsoft.com</p>
-        </div>
-
-        <div className="office-card">
-          <div className="office-title">NEW JERSEY · USA</div>
-          <p>
-            Infoway Software<br />
-            388 Washington Road, Suite A,<br />
-            Sayreville, NJ 08872
-          </p>
-          <p>Phone: +1 732-238-2120</p>
-          <p>
-            A wholly owned subsidiary of<br />
-            Sagarsoft (India) Limited
-          </p>
         </div>
       </div>
     </section>
