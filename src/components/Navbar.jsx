@@ -277,13 +277,9 @@ export default function Navbar() {
           top: 0;
           z-index: 1000;
           min-height: 60px;
-          background: var(--glass-bg);
-          backdrop-filter: blur(18px) saturate(160%);
-          -webkit-backdrop-filter: blur(18px) saturate(160%);
-          border-bottom: 1px solid var(--glass-border);
-          box-shadow:
-            0 10px 30px rgba(15, 23, 42, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+          background: #ffffff;
+          border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
           display: flex;
           align-items: center;
           font-family: "Inter", system-ui, -apple-system, sans-serif;
@@ -310,15 +306,11 @@ export default function Navbar() {
         }
 
         .logo-img {
-          width: 36px;
-          height: 36px;
-          object-fit: contain;
+          width: 200px;
+          height: 60px;
+          object-fit: cover;
+          object-position: -20% center;
           border-radius: 8px;
-          background: rgba(255,255,255,0.6);
-          padding: 4px;
-          box-shadow:
-            0 6px 20px rgba(0,0,0,0.08),
-            inset 0 0 0 1px rgba(255,255,255,0.6);
         }
 
         .logo-text {
@@ -620,13 +612,10 @@ export default function Navbar() {
           {/* LOGO */}
           <Link to="/" className="logo-link" onClick={() => setMenuOpen(false)}>
             <img
-              src="/brand-logo.png"
+              src="/images/glogo.png"
               alt="Galacticos Network"
               className="logo-img"
             />
-            <div className="logo-text">
-              GALACTICOS <span>NETWORK</span>
-            </div>
           </Link>
 
           {/* HAMBURGER */}

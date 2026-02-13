@@ -21,6 +21,48 @@ export default function Footer() {
           pointer-events: none;
         }
 
+        .map-pin {
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          z-index: 1;
+        }
+
+        .map-pin svg {
+          fill: #dc2626;
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .map-pin-label {
+          position: absolute;
+          top: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 10px;
+          font-weight: 600;
+          color: #374151;
+          white-space: nowrap;
+          background: rgba(255, 255, 255, 0.9);
+          padding: 2px 6px;
+          border-radius: 4px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .pin-hyderabad {
+          top: 44%;
+          left: 65%;
+        }
+
+        .pin-dubai {
+          top: 42%;
+          left: 58%;
+        }
+
+        .pin-raleigh {
+          top: 35%;
+          left: 25%;
+        }
+
         .footer-top {
           position: relative;
           max-width: 1400px;
@@ -213,6 +255,26 @@ export default function Footer() {
 
       {/* WORLD MAP BACKGROUND */}
       <div className="footer-map-bg"></div>
+
+      {/* MAP PINS */}
+      <div className="map-pin pin-hyderabad">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+        <span className="map-pin-label">Hyderabad</span>
+      </div>
+      <div className="map-pin pin-dubai">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+        <span className="map-pin-label">Dubai</span>
+      </div>
+      <div className="map-pin pin-raleigh">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+        <span className="map-pin-label">Raleigh</span>
+      </div>
 
       {/* TOP FOOTER */}
       <div className="footer-top">

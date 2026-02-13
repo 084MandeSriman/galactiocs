@@ -45,11 +45,13 @@
 
 
 import HeroSection from "../components/home/HeroSection";
+import HireAITalent from "../components/home/HireAITalent";
 import AboutSection from "../components/home/AboutSection";
 import ServicesSection from "../components/home/ServicesSection";
 import IndustriesSection from "../components/home/IndustriesSection";
 import CaseStudiesSection from "../components/home/CaseStudiesSection";
 import OfficesSection from "../components/home/OfficesSection";
+import TrustedCompanies from "../components/home/TrustedCompanies";
 
 // import ContactSection from "../components/home/ContactSection";
 
@@ -59,11 +61,13 @@ export default function Home() {
   return (
     <>
       <HeroSection />
+      <HireAITalent />
       <AboutSection />
       <ServicesSection />
       <IndustriesSection />
       <CaseStudiesSection />
       <OfficesSection />
+      <TrustedCompanies />
       {/* <ContactSection /> */}
       
     </>

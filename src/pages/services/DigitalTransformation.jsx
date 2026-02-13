@@ -258,6 +258,28 @@ export default function DigitalTransformation() {
         .dt-block {
           max-width: 900px;
           margin-bottom: 56px;
+          position: relative;
+          padding-left: 80px;
+        }
+
+        .dt-block-icon {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 60px;
+          height: 60px;
+          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .dt-block-icon svg {
+          width: 32px;
+          height: 32px;
+          fill: white;
         }
 
         .dt-block h2 {
@@ -352,6 +374,13 @@ export default function DigitalTransformation() {
           .dt-svg-icon {
             width: 60px;
             height: 60px;
+          }
+          .dt-block {
+            padding-left: 0;
+          }
+          .dt-block-icon {
+            position: relative;
+            margin-bottom: 15px;
           }
         }
 
@@ -552,6 +581,11 @@ export default function DigitalTransformation() {
         </p>
 
         <div className="dt-block">
+          <div className="dt-block-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/>
+            </svg>
+          </div>
           <h2>Business Context</h2>
           <p>
             The organization operated with complex, tightly coupled systems that
@@ -561,6 +595,11 @@ export default function DigitalTransformation() {
         </div>
 
         <div className="dt-block">
+          <div className="dt-block-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+          </div>
           <h2>Core Challenges</h2>
           <ul className="dt-list">
             <li>Monolithic architectures limiting speed and flexibility</li>
@@ -572,6 +611,11 @@ export default function DigitalTransformation() {
         </div>
 
         <div className="dt-block">
+          <div className="dt-block-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+            </svg>
+          </div>
           <h2>Transformation Approach</h2>
           <ul className="dt-list">
             <li>Cloud-native microservices architecture</li>
