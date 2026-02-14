@@ -56,7 +56,7 @@ export default function IndustriesSection() {
           overflow: hidden;
           box-shadow: 0 30px 60px rgba(0,0,0,0.15);
           transition: transform 0.5s ease, box-shadow 0.5s ease;
-          background: #0b1120;
+          background: #ffffff;
         }
 
         .engage-card:hover {
@@ -74,7 +74,6 @@ export default function IndustriesSection() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 70%);
         }
 
         .card-animation svg {
@@ -124,17 +123,15 @@ export default function IndustriesSection() {
           transform: translateY(0);
         }
 
-        /* DARK GRADIENT – unchanged */
+        /* OVERLAY */
         .card-overlay {
           position: absolute;
           inset: 0;
           background: linear-gradient(
             to top,
-            rgba(0,0,0,0.7),
-            rgba(0,0,0,0.3),
-            rgba(0,0,0,0)
+            rgba(0,0,0,0.8),
+            rgba(0,0,0,0.3)
           );
-          opacity: 0.85;
           z-index: 1;
         }
 
@@ -270,7 +267,11 @@ export default function IndustriesSection() {
             z-index: 3;
           }
           .card-overlay {
-            opacity: 0.6;
+            background: linear-gradient(
+              to top,
+              rgba(0,0,0,0.7),
+              rgba(0,0,0,0.2)
+            );
           }
         }
 
@@ -381,12 +382,12 @@ export default function IndustriesSection() {
             <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <linearGradient id="gradProf1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#3b82f6" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
+                  <stop offset="0%" stopColor="#6366f1" />
+                  <stop offset="100%" stopColor="#a855f7" />
                 </linearGradient>
                 <linearGradient id="gradProf2" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#f59e0b" />
-                  <stop offset="100%" stopColor="#ef4444" />
+                  <stop offset="100%" stopColor="#f97316" />
                 </linearGradient>
               </defs>
               {/* pulsating nodes */}
@@ -433,12 +434,12 @@ export default function IndustriesSection() {
             <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <linearGradient id="gradMan1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#06b6d4" />
-                  <stop offset="100%" stopColor="#3b82f6" />
+                  <stop offset="0%" stopColor="#14b8a6" />
+                  <stop offset="100%" stopColor="#06b6d4" />
                 </linearGradient>
                 <linearGradient id="gradMan2" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#a78bfa" />
-                  <stop offset="100%" stopColor="#ec4899" />
+                  <stop offset="0%" stopColor="#8b5cf6" />
+                  <stop offset="100%" stopColor="#d946ef" />
                 </linearGradient>
               </defs>
               {/* rotating gauge */}
@@ -483,12 +484,12 @@ export default function IndustriesSection() {
             <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <linearGradient id="gradBuild1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f97316" />
-                  <stop offset="100%" stopColor="#eab308" />
+                  <stop offset="0%" stopColor="#fb923c" />
+                  <stop offset="100%" stopColor="#fbbf24" />
                 </linearGradient>
                 <linearGradient id="gradBuild2" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#3b82f6" />
+                  <stop offset="100%" stopColor="#06b6d4" />
                 </linearGradient>
               </defs>
               {/* floating building blocks */}

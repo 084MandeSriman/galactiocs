@@ -1,641 +1,782 @@
-export default function LifeSciencesInnovation() {
+import React, { useEffect, useRef } from "react";
+
+export default function SAPTransformationCaseStudy() {
+  // ========== ANIMATED COUNTERS ==========
+  const countersRef = useRef([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const counter = entry.target;
+            const target = +counter.getAttribute("data-target");
+            let count = 0;
+            const updateCount = () => {
+              const increment = target / 50;
+              if (count < target) {
+                count = Math.min(count + increment, target);
+                counter.innerText = Math.round(count) + (counter.classList.contains("percent") ? "%" : "+");
+                requestAnimationFrame(updateCount);
+              } else {
+                counter.innerText = target + (counter.classList.contains("percent") ? "%" : "+");
+              }
+            };
+            updateCount();
+            observer.unobserve(counter);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    countersRef.current.forEach((counter) => {
+      if (counter) observer.observe(counter);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // ========== CASE STUDY DATA ==========
+  const caseData = {
+    client: "Global Manufacturing Group",
+    industry: "Industrial Manufacturing",
+    location: "North America, Europe, Asia",
+    scope: "SAP ECC to S/4HANA upgrade with 15+ modules",
+    timeline: "14 months",
+    challenge: [
+      "Legacy SAP ECC system with custom code – inflexible and costly to maintain",
+      "Batch‑based reporting delayed critical business decisions",
+      "Disconnected systems led to data silos and manual reconciliations",
+      "Compliance requirements demanded real‑time audit trails",
+    ],
+    solutionSteps: [
+      {
+        title: "Assessment & Roadmap",
+        desc: "Analyzed existing landscape, identified 300+ custom objects for optimization.",
+      },
+      {
+        title: "S/4HANA Conversion",
+        cap: "Brownfield conversion with SAP DMO – 6TB database migrated in 4 days.",
+      },
+      {
+        title: "Fiori & UX Rollout",
+        desc: "Deployed 50+ Fiori apps for finance, procurement, and supply chain.",
+      },
+      {
+        title: "Integration & BTP",
+        desc: "Connected S/4HANA with non‑SAP systems via SAP BTP (Integration Suite).",
+      },
+    ],
+    results: [
+      { value: 30, label: "Faster financial close", suffix: "%" },
+      { value: 99.9, label: "System availability", suffix: "%" },
+      { value: 40, label: "Reduced TCO", suffix: "%" },
+      { value: 200, label: "Process steps automated", suffix: "+" },
+    ],
+    testimonial: {
+      quote:
+        "Galacticos guided us through a complex S/4HANA journey with minimal business disruption. Our supply chain now operates with real‑time visibility, and we’ve cut reporting time by 70%.",
+      author: "CIO, Global Manufacturing Group",
+    },
+  };
+
   return (
-    <section className="ls-section">
+    <section className="case-study">
       <style>{`
-        .ls-section {
-          background:
-            linear-gradient(rgba(255,255,255,0.96), rgba(255,255,255,0.96)),
-            url("https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1920&q=80");
-          background-size: cover;
-          background-position: center;
-          margin: 0;
-          padding: 0;
-        }
-
-        /* ========== HERO – NEW SVG ANIMATION SUITE ========== */
-        .ls-hero {
+        /* ---------------------------------------------
+           GLOBAL STYLES & COSMIC BACKGROUND
+        --------------------------------------------- */
+        .case-study {
           position: relative;
-          width: 100%;
-          height: 520px;
-          overflow: hidden;
-          background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+          min-height: 100vh;
+          background:
+            linear-gradient(
+              rgba(255,255,255,0.92),
+              rgba(255,255,255,0.92)
+            ),
+            radial-gradient(circle at 20% 30%, rgba(37,99,235,0.04) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(124,58,237,0.04) 0%, transparent 40%),
+            url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80");
+          background-size: cover, cover, cover, cover;
+          background-position: center;
+          color: #1e293b;
+          overflow-x: hidden;
         }
 
-        .ls-hero-animation {
+        /* Floating particles */
+        .particle-field {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 1;
+        }
+        .particle {
+          position: absolute;
+          width: 3px;
+          height: 3px;
+          background: rgba(37,99,235,0.2);
+          border-radius: 50%;
+          box-shadow: 0 0 8px rgba(37,99,235,0.3);
+          animation: float-particle 18s infinite linear;
+        }
+        @keyframes float-particle {
+          0% { transform: translateY(0) translateX(0); opacity: 0; }
+          10% { opacity: 0.8; }
+          90% { opacity: 0.6; }
+          100% { transform: translateY(-120px) translateX(80px); opacity: 0; }
+        }
+
+        /* Content wrapper */
+        .content-wrapper {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 80px 24px;
+          position: relative;
+          z-index: 10;
+        }
+
+        /* ---------- HERO SECTION ---------- */
+        .hero {
+          position: relative;
+          height: 500px;
+          margin-bottom: 80px;
+          border-radius: 32px;
+          overflow: hidden;
+          background: linear-gradient(135deg, #1e3a8a, #2563eb, #4f46e5, #7c3aed);
+          box-shadow: 0 30px 50px -20px rgba(0,0,0,0.4);
+        }
+        .hero-animation {
           position: absolute;
           inset: 0;
-          z-index: 0;
+          opacity: 0.7;
         }
-
-        /* ----- animated SVG icons container ----- */
-        .ls-svg-icon {
+        .hero-svg-icon {
           position: absolute;
           width: 90px;
           height: 90px;
-          filter: drop-shadow(0 0 25px rgba(255,255,255,0.35));
-          animation: float 14s infinite ease-in-out;
+          filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
+          animation: float-hero 12s infinite alternate;
         }
+        @keyframes float-hero {
+          0% { transform: translateY(0) translateX(0); }
+          100% { transform: translateY(-25px) translateX(15px); }
+        }
+        /* SAP-specific icons */
+        .sap-gear { animation: spin 15s infinite linear; }
+        .sap-database { animation: pulse-db 3s infinite; }
+        .sap-cloud { animation: float-cloud 14s infinite alternate; }
+        .sap-hana { animation: pulse-hana 2s infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse-db { 0%,100% { opacity: 0.8; } 50% { opacity: 1; transform: scale(1.1); } }
+        @keyframes float-cloud { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
+        @keyframes pulse-hana { 0%,100% { filter: drop-shadow(0 0 10px #fff); } 50% { filter: drop-shadow(0 0 25px #fff); } }
 
-        .ls-svg-icon svg {
-          width: 100%;
-          height: 100%;
-          display: block;
-        }
-
-        /* ----- icon-specific animations ----- */
-        .dna-icon {
-          animation: floatDNA 16s infinite alternate, pulseGlow 4s infinite;
-        }
-        .cell-icon {
-          animation: floatCell 15s infinite alternate, pulseScale 3s infinite;
-        }
-        .microscope-icon {
-          animation: floatMicro 18s infinite alternate, rotateSlow 25s infinite linear;
-        }
-        .flask-icon {
-          animation: floatFlask 17s infinite alternate, hover 2.5s infinite ease-in-out;
-        }
-        .heart-icon {
-          animation: floatHeart 14s infinite alternate, pulseBeat 1.5s infinite;
-        }
-        .atom-icon {
-          animation: floatAtom 19s infinite alternate, spin 12s infinite linear;
-        }
-        .helix-icon {
-          animation: floatHelix 20s infinite alternate, rotateHalf 30s infinite linear;
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          33% { transform: translateY(-15px) translateX(10px); }
-          66% { transform: translateY(10px) translateX(-10px); }
-        }
-        @keyframes floatDNA {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          100% { transform: translate(-25px, -20px) rotate(10deg); }
-        }
-        @keyframes floatCell {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(20px, -30px) scale(1.15); }
-        }
-        @keyframes floatMicro {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          100% { transform: translate(-20px, 25px) rotate(15deg); }
-        }
-        @keyframes floatFlask {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(15px, -20px) scale(1.1); }
-        }
-        @keyframes floatHeart {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(-20px, 15px) scale(1.2); }
-        }
-        @keyframes floatAtom {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          100% { transform: translate(25px, -15px) rotate(45deg); }
-        }
-        @keyframes floatHelix {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          100% { transform: translate(-15px, 25px) rotate(30deg); }
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes rotateSlow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(120deg); }
-        }
-        @keyframes rotateHalf {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(180deg); }
-        }
-        @keyframes pulseGlow {
-          0%, 100% { filter: drop-shadow(0 0 15px rgba(16,185,129,0.6)); }
-          50% { filter: drop-shadow(0 0 30px rgba(5,150,105,0.9)); }
-        }
-        @keyframes pulseScale {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.15); }
-        }
-        @keyframes pulseBeat {
-          0%, 100% { transform: scale(1); opacity: 0.9; }
-          50% { transform: scale(1.25); opacity: 1; }
-        }
-        @keyframes hover {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-12px); }
-        }
-
-        /* ----- background overlay (unchanged) ----- */
-        .ls-hero::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(circle at 30% 50%, rgba(0,0,0,0.4), rgba(0,0,0,0.65));
-          animation: overlayFade 1.2s ease-out;
-        }
-
-        .ls-hero::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.03) 50%, transparent 70%);
-          animation: shine 8s infinite ease-in-out;
-          z-index: 1;
-        }
-
-        @keyframes overlayFade {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes shine {
-          0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-          100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        /* ========== INTRO ANIMATION – NEW SVG ICONS ========== */
-        .ls-intro-animation {
-          width: 100%;
-          height: 320px;
-          position: relative;
-          background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-          border-radius: 12px;
-          overflow: hidden;
-        }
-
-        .ls-intro-svg {
-          position: absolute;
-          width: 70px;
-          height: 70px;
-          filter: drop-shadow(0 0 15px rgba(16,185,129,0.4));
-          animation: introFloat 12s infinite ease-in-out;
-        }
-
-        .ls-intro-svg svg {
-          width: 100%;
-          height: 100%;
-          display: block;
-        }
-
-        @keyframes introFloat {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          50% { transform: translateY(-15px) translateX(10px); }
-        }
-
-        /* ========== CONTENT – EXACTLY THE SAME ========== */
-        .ls-hero-content {
+        .hero-content {
           position: absolute;
           bottom: 60px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 100%;
-          max-width: 1200px;
-          padding: 0 24px;
-          color: #ffffff;
-          z-index: 2;
+          left: 60px;
+          color: white;
+          z-index: 10;
+          max-width: 700px;
+        }
+        .hero-tag {
+          display: inline-block;
+          background: rgba(255,255,255,0.15);
+          backdrop-filter: blur(6px);
+          padding: 6px 16px;
+          border-radius: 40px;
+          font-size: 14px;
+          font-weight: 600;
+          letter-spacing: 1px;
+          margin-bottom: 20px;
+          border: 1px solid rgba(255,255,255,0.3);
+        }
+        .hero-title {
+          font-size: 56px;
+          font-weight: 900;
+          line-height: 1.1;
+          margin-bottom: 16px;
+          text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+        }
+        .hero-subtitle {
+          font-size: 20px;
+          opacity: 0.9;
+          font-weight: 400;
         }
 
-        .ls-tag {
-          display: inline-block;
-          background: linear-gradient(135deg, #2563eb, #1d4ed8);
-          padding: 6px 14px;
-          font-size: 13px;
-          font-weight: 700;
+        /* Section headers */
+        .section-header {
+          text-align: center;
+          margin-bottom: 50px;
+        }
+        .section-title {
+          font-size: 38px;
+          font-weight: 800;
+          color: #0f172a;
+          margin-bottom: 12px;
+        }
+        .section-title span {
+          background: linear-gradient(145deg, #2563eb, #7c3aed);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        .section-divider {
+          width: 80px;
+          height: 4px;
+          background: linear-gradient(90deg, #2563eb, #7c3aed);
+          margin: 0 auto;
+          border-radius: 2px;
+        }
+
+        /* Client overview card */
+        .client-card {
+          background: rgba(255,255,255,0.75);
+          backdrop-filter: blur(10px);
+          border-radius: 28px;
+          padding: 40px;
+          margin-bottom: 80px;
+          border: 1px solid rgba(255,255,255,0.6);
+          box-shadow: 0 25px 40px -15px rgba(0,0,0,0.1);
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 20px;
+        }
+        .client-item {
+          text-align: center;
+        }
+        .client-label {
+          font-size: 14px;
           text-transform: uppercase;
+          letter-spacing: 1px;
+          color: #64748b;
+          margin-bottom: 8px;
+        }
+        .client-value {
+          font-size: 20px;
+          font-weight: 700;
+          color: #0f172a;
+        }
+
+        /* Challenges grid */
+        .challenges-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 25px;
+          margin-bottom: 80px;
+        }
+        .challenge-card {
+          background: white;
+          border-radius: 24px;
+          padding: 28px;
+          display: flex;
+          gap: 20px;
+          align-items: flex-start;
+          box-shadow: 0 10px 25px -10px rgba(0,0,0,0.05);
+          border: 1px solid #eef2f6;
+          transition: all 0.3s ease;
+        }
+        .challenge-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 25px 35px -12px rgba(37,99,235,0.15);
+          border-color: #2563eb30;
+        }
+        .challenge-icon {
+          width: 48px;
+          height: 48px;
+          flex-shrink: 0;
+          background: linear-gradient(145deg, #2563eb10, #7c3aed10);
+          border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #2563eb;
+        }
+        .challenge-text {
+          font-size: 16px;
+          line-height: 1.6;
+          color: #334155;
+        }
+
+        /* Timeline */
+        .timeline {
+          display: flex;
+          justify-content: space-between;
+          margin: 60px 0 80px;
+          position: relative;
+        }
+        .timeline::before {
+          content: "";
+          position: absolute;
+          top: 30px;
+          left: 10%;
+          width: 80%;
+          height: 2px;
+          background: linear-gradient(90deg, #2563eb, #7c3aed);
+          opacity: 0.3;
+          z-index: 0;
+        }
+        .timeline-step {
+          position: relative;
+          z-index: 2;
+          background: white;
+          width: 220px;
+          padding: 24px;
+          border-radius: 20px;
+          box-shadow: 0 10px 25px -8px rgba(0,0,0,0.08);
+          border: 1px solid #f1f5f9;
+          transition: transform 0.3s ease;
+        }
+        .timeline-step:hover {
+          transform: scale(1.05);
+        }
+        .step-number {
+          width: 50px;
+          height: 50px;
+          background: linear-gradient(145deg, #2563eb, #7c3aed);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-weight: 700;
+          font-size: 22px;
           margin-bottom: 16px;
-          animation: slideInTag 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-          box-shadow: 0 4px 20px rgba(37,99,235,0.5), 0 0 40px rgba(37,99,235,0.3);
+        }
+        .step-title {
+          font-size: 18px;
+          font-weight: 700;
+          margin-bottom: 8px;
+          color: #0f172a;
+        }
+        .step-desc {
+          font-size: 14px;
+          color: #475569;
+          line-height: 1.5;
+        }
+
+        /* Architecture diagram */
+        .architecture {
+          background: rgba(255,255,255,0.6);
+          backdrop-filter: blur(8px);
+          border-radius: 36px;
+          padding: 50px 40px;
+          margin-bottom: 80px;
+          border: 1px solid rgba(255,255,255,0.7);
+          text-align: center;
+        }
+        .arch-diagram {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 30px;
+          flex-wrap: wrap;
+          margin: 40px 0 20px;
+        }
+        .arch-item {
+          width: 100px;
+          height: 100px;
+          background: white;
+          border-radius: 30px;
+          box-shadow: 0 15px 30px -12px rgba(0,0,0,0.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 15px;
+          transition: all 0.3s ease;
+          border: 1px solid #e9eef3;
+        }
+        .arch-item:hover {
+          transform: translateY(-8px);
+          border-color: #2563eb;
+        }
+        .arch-item svg {
+          width: 40px;
+          height: 40px;
+          margin-bottom: 8px;
+        }
+        .arch-connector {
+          font-size: 28px;
+          color: #2563eb;
+          font-weight: 300;
+        }
+
+        /* Results grid */
+        .results-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 30px;
+          margin: 50px 0 80px;
+        }
+        .result-card {
+          background: white;
+          border-radius: 28px;
+          padding: 30px 20px;
+          text-align: center;
+          box-shadow: 0 20px 35px -12px rgba(0,0,0,0.05);
+          border: 1px solid #f0f4f9;
+        }
+        .result-number {
+          font-size: 44px;
+          font-weight: 900;
+          background: linear-gradient(145deg, #2563eb, #7c3aed);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin-bottom: 10px;
+          line-height: 1;
+        }
+        .result-label {
+          font-size: 16px;
+          color: #475569;
+        }
+
+        /* Testimonial */
+        .testimonial {
+          background: linear-gradient(145deg, #2563eb08, #7c3aed08);
+          border-left: 6px solid #2563eb;
+          padding: 40px 50px;
+          border-radius: 30px;
+          margin-bottom: 80px;
           position: relative;
           overflow: hidden;
         }
-
-        .ls-tag::before {
-          content: '';
+        .testimonial::before {
+          content: "“";
           position: absolute;
-          inset: 0;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-          animation: tagShine 3s infinite;
+          top: -10px;
+          left: 20px;
+          font-size: 150px;
+          font-family: serif;
+          color: #2563eb10;
+          pointer-events: none;
         }
-
-        @keyframes slideInTag {
-          from { opacity: 0; transform: translateY(20px) scale(0.8); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes tagShine {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(200%); }
-        }
-
-        .ls-hero-content h1 {
-          font-size: 48px;
-          font-weight: 900;
-          line-height: 1.2;
-          margin: 0;
-          animation: slideInTitle 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
-          text-shadow: 0 4px 25px rgba(0,0,0,0.4), 0 8px 50px rgba(16,185,129,0.3);
+        .testimonial-quote {
+          font-size: 22px;
+          line-height: 1.5;
+          color: #1e293b;
+          margin-bottom: 20px;
           position: relative;
+          z-index: 2;
+        }
+        .testimonial-author {
+          font-size: 16px;
+          font-weight: 600;
+          color: #2563eb;
         }
 
-        .ls-hero-content h1::after {
-          content: '';
-          position: absolute;
-          bottom: -8px;
-          left: 0;
-          width: 0;
-          height: 3px;
-          background: linear-gradient(90deg, #34d399, #10b981);
-          animation: underlineGrow 1s ease-out 0.8s forwards;
-          box-shadow: 0 0 15px rgba(52,211,153,0.6);
-        }
-
-        @keyframes slideInTitle {
-          from { opacity: 0; transform: translateY(40px) scale(0.95); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes underlineGrow {
-          to { width: 120px; }
-        }
-
-        .ls-wrapper {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 80px 24px 24px;
-        }
-
-        .ls-intro {
+        /* Related services */
+        .related-grid {
           display: grid;
-          grid-template-columns: 1.1fr 0.9fr;
-          gap: 56px;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 25px;
+          margin-bottom: 60px;
+        }
+        .service-card {
+          background: white;
+          border-radius: 24px;
+          padding: 30px 25px;
+          border: 1px solid #eef2f6;
+          transition: all 0.3s ease;
+        }
+        .service-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 25px 35px -15px rgba(37,99,235,0.15);
+          border-color: #2563eb;
+        }
+        .service-icon {
+          width: 56px;
+          height: 56px;
+          background: linear-gradient(145deg, #2563eb10, #7c3aed10);
+          border-radius: 16px;
+          display: flex;
           align-items: center;
-          margin-bottom: 70px;
+          justify-content: center;
+          margin-bottom: 20px;
+          color: #2563eb;
         }
-
-        .ls-intro h2 {
-          font-size: 34px;
-          font-weight: 800;
-          color: #f97316;
-          margin-bottom: 18px;
-        }
-
-        .ls-intro p {
-          font-size: 16px;
-          line-height: 1.8;
-          color: #374151;
-          margin-bottom: 14px;
-        }
-
-        .ls-block {
-          max-width: 900px;
-          margin-bottom: 48px;
-        }
-
-        .ls-block p {
-          font-size: 16px;
-          line-height: 1.75;
-          color: #374151;
-          margin-bottom: 14px;
-        }
-
-        .ls-list {
-          padding-left: 18px;
-          margin-bottom: 22px;
-        }
-
-        .ls-list li {
-          font-size: 15px;
-          color: #374151;
-          margin-bottom: 8px;
-        }
-
-        .ls-highlight {
-          color: #f97316;
+        .service-title {
+          font-size: 20px;
           font-weight: 700;
           margin-bottom: 10px;
+          color: #0f172a;
         }
-
-        .ls-note {
-          max-width: 900px;
-          font-size: 16px;
-          line-height: 1.75;
-          color: #374151;
-          margin-bottom: 28px;
+        .service-desc {
+          font-size: 14px;
+          color: #475569;
+          line-height: 1.6;
+          margin-bottom: 20px;
         }
-
-        /* BACK TO HOME – same as DigitalTransformation */
-        .ls-back {
-          margin-top: 28px;
-          padding-top: 18px;
-          padding-bottom: 120px;
-          border-top: 1px solid #e5e7eb;
-        }
-
-        .ls-back a {
-          font-size: 15px;
+        .service-link {
           font-weight: 600;
           color: #2563eb;
           text-decoration: none;
+          border-bottom: 2px solid transparent;
+          transition: border-color 0.2s;
+        }
+        .service-link:hover {
+          border-bottom-color: #2563eb;
         }
 
-        .ls-back a:hover {
-          text-decoration: underline;
+        /* Back link */
+        .back-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #2563eb;
+          text-decoration: none;
+          padding: 12px 28px;
+          background: white;
+          border-radius: 50px;
+          box-shadow: 0 8px 18px -8px rgba(0,0,0,0.08);
+          transition: all 0.3s ease;
+        }
+        .back-link:hover {
+          background: #2563eb;
+          color: white;
+          transform: translateX(-5px);
         }
 
-        @media (max-width: 900px) {
-          .ls-hero {
-            height: 380px;
-          }
-          .ls-hero-content h1 {
-            font-size: 34px;
-          }
-          .ls-intro {
-            grid-template-columns: 1fr;
-          }
-          .ls-svg-icon {
-            width: 70px;
-            height: 70px;
-          }
-          .ls-intro-svg {
-            width: 55px;
-            height: 55px;
-          }
+        /* Responsive */
+        @media (max-width: 1100px) {
+          .client-card { grid-template-columns: repeat(3, 1fr); }
+          .timeline { flex-wrap: wrap; justify-content: center; gap: 20px; }
+          .timeline::before { display: none; }
+          .results-grid { grid-template-columns: repeat(2, 1fr); }
+          .related-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+          .hero-title { font-size: 42px; }
+          .hero-content { left: 30px; bottom: 30px; }
+          .client-card { grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 30px; }
+          .challenges-grid { grid-template-columns: 1fr; }
+          .related-grid { grid-template-columns: 1fr; }
+          .testimonial-quote { font-size: 18px; }
+          .section-title { font-size: 30px; }
+        }
+        @media (max-width: 520px) {
+          .hero-title { font-size: 32px; }
+          .hero { height: 400px; }
+          .client-card { grid-template-columns: 1fr; }
+          .results-grid { grid-template-columns: 1fr; }
         }
       `}</style>
 
-      {/* ========== HERO – COLORFUL ANIMATED SVG ICONS ========== */}
-      <div className="ls-hero">
-        <div className="ls-hero-animation">
-          {/* DNA Helix */}
-          <div className="ls-svg-icon dna-icon" style={{ top: '10%', left: '5%', width: '100px', height: '100px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="dnaGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#34d399" />
-                  <stop offset="100%" stopColor="#10b981" />
-                </linearGradient>
-                <linearGradient id="dnaGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#fbbf24" />
-                  <stop offset="100%" stopColor="#f59e0b" />
-                </linearGradient>
-              </defs>
-              {/* left strand */}
-              <path d="M30 20 Q35 35 30 50 Q25 65 30 80" stroke="url(#dnaGrad1)" strokeWidth="4" fill="none" strokeDasharray="6 6">
-                <animate attributeName="stroke-dashoffset" values="0;100;0" dur="8s" repeatCount="indefinite" />
-              </path>
-              {/* right strand */}
-              <path d="M70 20 Q65 35 70 50 Q75 65 70 80" stroke="url(#dnaGrad2)" strokeWidth="4" fill="none" strokeDasharray="6 6">
-                <animate attributeName="stroke-dashoffset" values="0;100;0" dur="8s" repeatCount="indefinite" />
-              </path>
-              {/* rungs */}
-              <line x1="30" y1="30" x2="70" y2="30" stroke="white" strokeWidth="2" opacity="0.6">
-                <animate attributeName="y1" values="30;35;30" dur="2s" repeatCount="indefinite" />
-              </line>
-              <line x1="30" y1="50" x2="70" y2="50" stroke="white" strokeWidth="2" opacity="0.6">
-                <animate attributeName="y1" values="50;55;50" dur="2.4s" repeatCount="indefinite" />
-              </line>
-              <line x1="30" y1="70" x2="70" y2="70" stroke="white" strokeWidth="2" opacity="0.6">
-                <animate attributeName="y1" values="70;75;70" dur="2.2s" repeatCount="indefinite" />
-              </line>
+      {/* ---------- COSMIC PARTICLES ---------- */}
+      <div className="particle-field">
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={i}
+            className="particle"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 15}s`,
+              width: `${Math.random() * 5 + 2}px`,
+              height: `${Math.random() * 5 + 2}px`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* ---------- HERO ---------- */}
+      <div className="hero">
+        <div className="hero-animation">
+          {/* SAP Gear */}
+          <div className="hero-svg-icon" style={{ top: '15%', left: '10%' }}>
+            <svg viewBox="0 0 100 100" width="80" height="80">
+              <circle cx="50" cy="50" r="30" fill="none" stroke="white" strokeWidth="6" strokeDasharray="8 8"/>
+              <path d="M50 20 L50 30 M70 50 L80 50 M50 70 L50 80 M20 50 L30 50" stroke="white" strokeWidth="5" strokeLinecap="round"/>
+              <circle cx="50" cy="50" r="15" fill="white" opacity="0.8"/>
             </svg>
           </div>
-
-          {/* Cell / Molecule */}
-          <div className="ls-svg-icon cell-icon" style={{ top: '60%', left: '75%', width: '85px', height: '85px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <radialGradient id="cellGrad">
-                  <stop offset="0%" stopColor="#f472b6" />
-                  <stop offset="100%" stopColor="#ec4899" />
-                </radialGradient>
-              </defs>
-              <circle cx="50" cy="50" r="35" fill="url(#cellGrad)" opacity="0.9">
-                <animate attributeName="r" values="32;38;32" dur="4s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="50" cy="50" r="12" fill="white" opacity="0.8">
-                <animate attributeName="r" values="10;14;10" dur="3s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="30" cy="35" r="5" fill="white" opacity="0.7" />
-              <circle cx="70" cy="60" r="6" fill="white" opacity="0.7" />
-              <circle cx="45" cy="75" r="4" fill="white" opacity="0.7" />
+          {/* SAP Database */}
+          <div className="hero-svg-icon" style={{ top: '60%', left: '80%', animationDuration: '16s' }}>
+            <svg viewBox="0 0 100 100" width="70" height="70">
+              <ellipse cx="50" cy="35" rx="30" ry="12" fill="white" opacity="0.9"/>
+              <path d="M20 35 L20 65 Q20 75 50 75 Q80 75 80 65 L80 35" stroke="white" strokeWidth="4" fill="none"/>
+              <ellipse cx="50" cy="65" rx="30" ry="12" fill="white" opacity="0.7"/>
             </svg>
           </div>
-
-          {/* Microscope */}
-          <div className="ls-svg-icon microscope-icon" style={{ top: '20%', left: '70%', width: '95px', height: '95px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="microGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#94a3b8" />
-                  <stop offset="100%" stopColor="#64748b" />
-                </linearGradient>
-              </defs>
-              <rect x="45" y="60" width="10" height="30" fill="url(#microGrad)" />
-              <rect x="30" y="80" width="40" height="8" fill="#475569" />
-              <circle cx="50" cy="45" r="15" fill="none" stroke="#38bdf8" strokeWidth="4">
-                <animate attributeName="r" values="13;17;13" dur="3s" repeatCount="indefinite" />
-              </circle>
-              <line x1="50" y1="45" x2="50" y2="60" stroke="#38bdf8" strokeWidth="3" />
+          {/* SAP Cloud */}
+          <div className="hero-svg-icon" style={{ top: '25%', left: '75%', animationDuration: '14s' }}>
+            <svg viewBox="0 0 100 100" width="60" height="60">
+              <path d="M70 55 Q80 45 70 35 Q60 20 45 30 Q35 15 25 25 Q15 30 20 45 Q10 55 25 65 Q30 75 45 70 Q55 80 70 70 Q80 70 70 55Z" fill="white" opacity="0.9"/>
             </svg>
           </div>
-
-          {/* Flask / Test tube */}
-          <div className="ls-svg-icon flask-icon" style={{ top: '45%', left: '15%', width: '80px', height: '80px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="flaskGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#a78bfa" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
-                </linearGradient>
-              </defs>
-              <path d="M35 25 L35 50 Q35 70 50 70 Q65 70 65 50 L65 25" stroke="url(#flaskGrad)" strokeWidth="5" fill="none" />
-              <ellipse cx="50" cy="25" rx="15" ry="6" stroke="url(#flaskGrad)" strokeWidth="4" fill="none" />
-              <circle cx="50" cy="50" r="6" fill="#fde047" opacity="0.8">
-                <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite" />
-              </circle>
-            </svg>
-          </div>
-
-          {/* Heart / Healthcare */}
-          <div className="ls-svg-icon heart-icon" style={{ top: '70%', left: '35%', width: '75px', height: '75px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f43f5e" />
-                  <stop offset="100%" stopColor="#e11d48" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M50 30 L45 25 Q30 20 25 35 Q20 50 35 65 L50 80 L65 65 Q80 50 75 35 Q70 20 55 25 Z"
-                fill="url(#heartGrad)"
-                opacity="0.9"
-              >
-                <animate attributeName="opacity" values="0.9;1;0.9" dur="1.5s" repeatCount="indefinite" />
-              </path>
-            </svg>
-          </div>
-
-          {/* Atom / Particle */}
-          <div className="ls-svg-icon atom-icon" style={{ top: '30%', left: '45%', width: '90px', height: '90px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="atomGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#60a5fa" />
-                  <stop offset="100%" stopColor="#3b82f6" />
-                </linearGradient>
-              </defs>
-              <circle cx="50" cy="50" r="20" fill="none" stroke="url(#atomGrad)" strokeWidth="3" strokeDasharray="4 6">
-                <animate attributeName="stroke-dashoffset" values="0;100;0" dur="10s" repeatCount="indefinite" />
-              </circle>
-              <ellipse cx="50" cy="50" rx="30" ry="12" fill="none" stroke="url(#atomGrad)" strokeWidth="3" transform="rotate(45 50 50)">
-                <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="12s" repeatCount="indefinite" />
-              </ellipse>
-              <ellipse cx="50" cy="50" rx="30" ry="12" fill="none" stroke="url(#atomGrad)" strokeWidth="3" transform="rotate(-45 50 50)">
-                <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="-360 50 50" dur="12s" repeatCount="indefinite" />
-              </ellipse>
-              <circle cx="50" cy="50" r="6" fill="url(#atomGrad)" />
-            </svg>
-          </div>
-
-          {/* DNA Helix – second */}
-          <div className="ls-svg-icon helix-icon" style={{ top: '75%', left: '85%', width: '80px', height: '80px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="helixGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#2dd4bf" />
-                  <stop offset="100%" stopColor="#14b8a6" />
-                </linearGradient>
-              </defs>
-              <path d="M30 20 L30 80" stroke="url(#helixGrad)" strokeWidth="4" />
-              <path d="M70 20 L70 80" stroke="url(#helixGrad)" strokeWidth="4" />
-              <circle cx="30" cy="30" r="5" fill="white" opacity="0.8" />
-              <circle cx="70" cy="30" r="5" fill="white" opacity="0.8" />
-              <circle cx="30" cy="50" r="5" fill="white" opacity="0.8" />
-              <circle cx="70" cy="50" r="5" fill="white" opacity="0.8" />
-              <circle cx="30" cy="70" r="5" fill="white" opacity="0.8" />
-              <circle cx="70" cy="70" r="5" fill="white" opacity="0.8" />
+          {/* SAP HANA */}
+          <div className="hero-svg-icon" style={{ top: '70%', left: '20%', animationDuration: '18s' }}>
+            <svg viewBox="0 0 100 100" width="75" height="75">
+              <rect x="30" y="30" width="40" height="40" rx="6" fill="none" stroke="white" strokeWidth="5"/>
+              <line x1="30" y1="40" x2="70" y2="40" stroke="white" strokeWidth="4"/>
+              <line x1="30" y1="50" x2="70" y2="50" stroke="white" strokeWidth="4"/>
+              <line x1="30" y1="60" x2="70" y2="60" stroke="white" strokeWidth="4"/>
             </svg>
           </div>
         </div>
-
-        <div className="ls-hero-content">
-          <span className="ls-tag">Healthcare</span>
-          <h1>Life Sciences Innovation</h1>
+        <div className="hero-content">
+          <span className="hero-tag">CASE STUDY</span>
+          <h1 className="hero-title">SAP S/4HANA Transformation</h1>
+          <p className="hero-subtitle">for a Global Manufacturing Group</p>
         </div>
       </div>
 
-      {/* ========== CONTENT – EXACTLY THE SAME ========== */}
-      <div className="ls-wrapper">
-        <div className="ls-intro">
-          <div>
-            <h2>Veeva’s iRep</h2>
-            <p>
-              The customer provides specialty solutions and services from
-              advanced lab sciences to translational informatics, clinical trial
-              delivery, regulatory affairs, and payer insights.
-            </p>
-            <p>
-              Sales representatives use this information to improve physician
-              engagement, enable timely decision-making, and strengthen
-              relationships.
-            </p>
+      <div className="content-wrapper">
+        {/* ---------- CLIENT OVERVIEW ---------- */}
+        <div className="client-card">
+          <div className="client-item">
+            <div className="client-label">Client</div>
+            <div className="client-value">{caseData.client}</div>
           </div>
+          <div className="client-item">
+            <div className="client-label">Industry</div>
+            <div className="client-value">{caseData.industry}</div>
+          </div>
+          <div className="client-item">
+            <div className="client-label">Location</div>
+            <div className="client-value">{caseData.location}</div>
+          </div>
+          <div className="client-item">
+            <div className="client-label">Scope</div>
+            <div className="client-value">{caseData.scope}</div>
+          </div>
+          <div className="client-item">
+            <div className="client-label">Timeline</div>
+            <div className="client-value">{caseData.timeline}</div>
+          </div>
+        </div>
 
-          {/* INTRO ANIMATION – REPLACED WITH SVG ICONS */}
-          <div className="ls-intro-animation">
-            {/* DNA Strand */}
-            <div className="ls-intro-svg" style={{ top: '15%', left: '10%', width: '60px', height: '60px' }}>
-              <svg viewBox="0 0 100 100">
-                <path d="M20 20 L20 80" stroke="#10b981" strokeWidth="4" />
-                <path d="M80 20 L80 80" stroke="#10b981" strokeWidth="4" />
-                <circle cx="20" cy="30" r="5" fill="#10b981" />
-                <circle cx="80" cy="30" r="5" fill="#10b981" />
-                <circle cx="20" cy="50" r="5" fill="#10b981" />
-                <circle cx="80" cy="50" r="5" fill="#10b981" />
-                <circle cx="20" cy="70" r="5" fill="#10b981" />
-                <circle cx="80" cy="70" r="5" fill="#10b981" />
-              </svg>
+        {/* ---------- CHALLENGES ---------- */}
+        <div className="section-header">
+          <h2 className="section-title">The <span>Challenge</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="challenges-grid">
+          {caseData.challenge.map((item, idx) => (
+            <div className="challenge-card" key={idx}>
+              <div className="challenge-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <div className="challenge-text">{item}</div>
             </div>
-            {/* Cell */}
-            <div className="ls-intro-svg" style={{ top: '50%', left: '70%', width: '70px', height: '70px' }}>
-              <svg viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="30" fill="#34d399" opacity="0.7">
-                  <animate attributeName="r" values="28;32;28" dur="3s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="50" cy="50" r="10" fill="white" opacity="0.9" />
-              </svg>
+          ))}
+        </div>
+
+        {/* ---------- SOLUTION TIMELINE ---------- */}
+        <div className="section-header">
+          <h2 className="section-title">Our <span>Solution</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="timeline">
+          {caseData.solutionSteps.map((step, idx) => (
+            <div className="timeline-step" key={idx}>
+              <div className="step-number">{idx + 1}</div>
+              <div className="step-title">{step.title}</div>
+              <div className="step-desc">{step.desc}</div>
             </div>
-            {/* Flask */}
-            <div className="ls-intro-svg" style={{ top: '30%', left: '40%', width: '55px', height: '55px' }}>
-              <svg viewBox="0 0 100 100">
-                <path d="M35 30 L35 60 Q35 80 50 80 Q65 80 65 60 L65 30" stroke="#f59e0b" strokeWidth="4" fill="none" />
-                <circle cx="50" cy="50" r="6" fill="#fbbf24" />
-              </svg>
+          ))}
+        </div>
+
+        {/* ---------- ARCHITECTURE HIGHLIGHT ---------- */}
+        <div className="architecture">
+          <h3 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '20px' }}>SAP S/4HANA Landscape</h3>
+          <div className="arch-diagram">
+            <div className="arch-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb"><rect x="2" y="2" width="20" height="20" rx="4" /></svg>
+              <span>ECC</span>
             </div>
-            {/* Particle / Molecule */}
-            <div className="ls-intro-svg" style={{ top: '70%', left: '20%', width: '50px', height: '50px' }}>
-              <svg viewBox="0 0 100 100">
-                <circle cx="30" cy="30" r="8" fill="#a78bfa" />
-                <circle cx="70" cy="50" r="8" fill="#a78bfa" />
-                <circle cx="50" cy="70" r="8" fill="#a78bfa" />
-                <line x1="30" y1="30" x2="70" y2="50" stroke="#8b5cf6" strokeWidth="3" strokeDasharray="3 3" />
-                <line x1="70" y1="50" x2="50" y2="70" stroke="#8b5cf6" strokeWidth="3" strokeDasharray="3 3" />
-                <line x1="50" y1="70" x2="30" y2="30" stroke="#8b5cf6" strokeWidth="3" strokeDasharray="3 3" />
-              </svg>
+            <span className="arch-connector">→</span>
+            <div className="arch-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb"><rect x="2" y="2" width="20" height="20" rx="4" /></svg>
+              <span>S/4HANA</span>
             </div>
-            {/* Additional floating particles */}
-            {Array.from({ length: 10 }).map((_, i) => (
+            <span className="arch-connector">+</span>
+            <div className="arch-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
+              <span>Fiori</span>
+            </div>
+            <span className="arch-connector">⚙️</span>
+            <div className="arch-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb"><circle cx="12" cy="12" r="8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+              <span>BTP</span>
+            </div>
+          </div>
+          <p style={{ color: '#475569', marginTop: '20px' }}>Brownfield conversion with SAP DMO, 50+ Fiori apps, integrated with BTP.</p>
+        </div>
+
+        {/* ---------- RESULTS ---------- */}
+        <div className="section-header">
+          <h2 className="section-title">Key <span>Outcomes</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="results-grid">
+          {caseData.results.map((result, idx) => (
+            <div className="result-card" key={idx}>
               <div
-                key={`particle-${i}`}
-                style={{
-                  position: 'absolute',
-                  width: `${3 + Math.floor(Math.random() * 6)}px`,
-                  height: `${3 + Math.floor(Math.random() * 6)}px`,
-                  background: `rgba(${16 + Math.random() * 100}, ${185 + Math.random() * 70}, ${129 + Math.random() * 50}, 0.7)`,
-                  borderRadius: '50%',
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  animation: `introFloat ${5 + Math.random() * 5}s infinite ease-in-out`,
-                  animationDelay: `${Math.random() * 3}s`
-                }}
-              />
-            ))}
+                className="result-number"
+                ref={(el) => (countersRef.current[idx] = el)}
+                data-target={result.value}
+              >
+                0{result.suffix}
+              </div>
+              <div className="result-label">{result.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ---------- TESTIMONIAL ---------- */}
+        <div className="testimonial">
+          <div className="testimonial-quote">{caseData.testimonial.quote}</div>
+          <div className="testimonial-author">— {caseData.testimonial.author}</div>
+        </div>
+
+        {/* ---------- RELATED SERVICES ---------- */}
+        <div className="section-header">
+          <h2 className="section-title">Explore <span>More</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="related-grid">
+          <div className="service-card">
+            <div className="service-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="2.18"/><path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5"/></svg>
+            </div>
+            <div className="service-title">Hyperion EPM</div>
+            <div className="service-desc">Financial close & planning modernization.</div>
+            <a href="#" className="service-link">Learn more →</a>
+          </div>
+          <div className="service-card">
+            <div className="service-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 0 0 0 20 15 15 0 0 0 0-20z"/><path d="M2 12h20"/></svg>
+            </div>
+            <div className="service-title">AI & Analytics</div>
+            <div className="service-desc">Predictive insights and real‑time intelligence.</div>
+            <a href="#" className="service-link">Learn more →</a>
+          </div>
+          <div className="service-card">
+            <div className="service-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M12 22V12"/></svg>
+            </div>
+            <div className="service-title">Cloud Automation</div>
+            <div className="service-desc">RPA and intelligent process automation.</div>
+            <a href="#" className="service-link">Learn more →</a>
           </div>
         </div>
 
-        <div className="ls-block">
-          <p>
-            The manufacturer sought to improve sales effectiveness and content
-            marketing impact, but the existing Veeva CRM lacked enriched CLM
-            capabilities.
-          </p>
-          <ul className="ls-list">
-            <li>Low quality of engagement with Physicians</li>
-            <li>Reduced email click-through rates and responses</li>
-          </ul>
-        </div>
-
-        <div className="ls-block">
-          <div className="ls-highlight">We implemented Veeva’s iRep to deliver:</div>
-          <ul className="ls-list">
-            <li>Interactive e-detail and drug content</li>
-            <li>Near real-time dashboards</li>
-            <li>Brand-compliant standardized materials</li>
-            <li>Approved emails for targeted outreach</li>
-            <li>Consistent UX / UI across brands</li>
-          </ul>
-        </div>
-
-        <div className="ls-note">
-          The solution was successfully rolled out to multiple manufacturers,
-          delivering sustained improvements in marketing performance and
-          physician engagement.
-        </div>
-
-        <div className="ls-back">
-          <a href="/">← Back to Home</a>
+        {/* ---------- BACK LINK ---------- */}
+        <div style={{ textAlign: 'center' }}>
+          <a href="/" className="back-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Home
+          </a>
         </div>
       </div>
     </section>

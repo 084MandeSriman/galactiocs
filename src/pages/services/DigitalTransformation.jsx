@@ -1,661 +1,757 @@
-export default function DigitalTransformation() {
+import React, { useEffect, useRef } from "react";
+
+export default function CloudMigrationCaseStudy() {
+  // ========== ANIMATED COUNTERS ==========
+  const countersRef = useRef([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const counter = entry.target;
+            const target = +counter.getAttribute("data-target");
+            let count = 0;
+            const updateCount = () => {
+              const increment = target / 50; // smooth increment
+              if (count < target) {
+                count = Math.min(count + increment, target);
+                counter.innerText = Math.round(count) + (counter.classList.contains("percent") ? "%" : "");
+                requestAnimationFrame(updateCount);
+              } else {
+                counter.innerText = target + (counter.classList.contains("percent") ? "%" : "");
+              }
+            };
+            updateCount();
+            observer.unobserve(counter);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    countersRef.current.forEach((counter) => {
+      if (counter) observer.observe(counter);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // ========== CASE STUDY DATA ==========
+  const caseData = {
+    client: "Global Investment Bank",
+    industry: "Financial Services",
+    location: "North America, Europe, APAC",
+    scope: "200+ legacy applications migrated",
+    challenge: [
+      "Legacy on‑premise infrastructure with spiraling maintenance costs",
+      "Peak trading hours caused performance bottlenecks and scalability limits",
+      "Manual provisioning and lack of automation slowed time‑to‑market",
+      "Regulatory compliance required strict security and audit controls",
+    ],
+    solutionSteps: [
+      {
+        title: "Assessment & Planning",
+        desc: "Comprehensive portfolio analysis, dependency mapping, and TCO modelling.",
+      },
+      {
+        title: "Cloud Foundation",
+        desc: "Landing zones on AWS & Azure with built‑in security, identity, and governance.",
+      },
+      {
+        title: "Migration Waves",
+        desc: "Lift‑and‑shift, re‑platforming, and re‑architecting of 200+ apps in 9 months.",
+      },
+      {
+        title: "Optimization & Automation",
+        desc: "Auto‑scaling, spot instances, and FinOps practices reduced costs continuously.",
+      },
+    ],
+    results: [
+      { value: 40, label: "Infrastructure cost reduction", suffix: "%" },
+      { value: 200, label: "Applications migrated", suffix: "+" },
+      { value: 99.9, label: "Trading platform uptime", suffix: "%" },
+      { value: 60, label: "Faster provisioning", suffix: "%" },
+    ],
+    testimonial: {
+      quote:
+        "Galacticos delivered a flawless migration during one of the most volatile market periods. Our trading platforms are now more resilient, scalable, and cost‑effective than ever.",
+      author: "CIO, Global Investment Bank",
+    },
+  };
+
   return (
-    <section className="dt-section">
+    <section className="case-study">
       <style>{`
-        .dt-section {
+        /* ---------------------------------------------
+           GLOBAL STYLES & COSMIC BACKGROUND
+        --------------------------------------------- */
+        .case-study {
+          position: relative;
           min-height: 100vh;
           background:
             linear-gradient(
-              rgba(248,250,255,0.94),
-              rgba(248,250,255,0.94)
+              rgba(255,255,255,0.92),
+              rgba(255,255,255,0.92)
             ),
+            radial-gradient(circle at 20% 30%, rgba(37,99,235,0.04) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(124,58,237,0.04) 0%, transparent 40%),
             url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80");
-          background-size: cover;
+          background-size: cover, cover, cover, cover;
           background-position: center;
+          color: #1e293b;
+          overflow-x: hidden;
         }
 
-        /* ========== HERO – NEW SVG ANIMATION SUITE ========== */
-        .dt-hero {
-          position: relative;
-          width: 100%;
-          height: 460px;
-          overflow: hidden;
-          background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 30%, #6366f1 60%, #8b5cf6 100%);
-        }
-
-        .dt-hero-animation {
+        /* Floating particles */
+        .particle-field {
           position: absolute;
-          inset: 0;
-          z-index: 0;
-        }
-
-        /* ----- animated SVG icons container ----- */
-        .dt-svg-icon {
-          position: absolute;
-          width: 80px;
-          height: 80px;
-          filter: drop-shadow(0 0 20px rgba(255,255,255,0.3));
-          animation: float 12s infinite ease-in-out;
-        }
-
-        .dt-svg-icon svg {
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
-          display: block;
-        }
-
-        /* ----- icon-specific animations ----- */
-        .cloud-icon {
-          animation: floatCloud 16s infinite alternate, pulseGlow 4s infinite;
-        }
-        .microservice-icon {
-          animation: floatMicro 14s infinite alternate, rotateSlow 20s infinite linear;
-        }
-        .kubernetes-icon {
-          animation: floatKube 18s infinite alternate, spin 12s infinite linear;
-        }
-        .code-icon {
-          animation: floatCode 15s infinite alternate, pulseScale 3s infinite;
-        }
-        .gear-icon {
-          animation: floatGear 17s infinite alternate, spin 10s infinite linear;
-        }
-        .rocket-icon {
-          animation: floatRocket 20s infinite alternate, hover 2s infinite ease-in-out;
-        }
-        .database-icon {
-          animation: floatDB 19s infinite alternate, pulseOpacity 4s infinite;
-        }
-        .network-icon {
-          animation: floatNetwork 13s infinite alternate, rotateHalf 16s infinite linear;
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); }
-          33% { transform: translateY(-15px) translateX(10px); }
-          66% { transform: translateY(10px) translateX(-10px); }
-        }
-        @keyframes floatCloud {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(-30px, -20px) scale(1.1); }
-        }
-        @keyframes floatMicro {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          100% { transform: translate(25px, -15px) rotate(15deg); }
-        }
-        @keyframes floatKube {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          100% { transform: translate(-20px, 25px) rotate(30deg); }
-        }
-        @keyframes floatCode {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(15px, -25px) scale(1.15); }
-        }
-        @keyframes floatGear {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          100% { transform: translate(-25px, 15px) rotate(60deg); }
-        }
-        @keyframes floatRocket {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(30px, -40px) scale(1.2); }
-        }
-        @keyframes floatDB {
-          0% { transform: translate(0, 0); }
-          100% { transform: translate(-15px, 30px); }
-        }
-        @keyframes floatNetwork {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          100% { transform: translate(20px, 20px) rotate(45deg); }
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes rotateSlow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(120deg); }
-        }
-        @keyframes rotateHalf {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(180deg); }
-        }
-        @keyframes pulseGlow {
-          0%, 100% { filter: drop-shadow(0 0 15px rgba(59,130,246,0.6)); }
-          50% { filter: drop-shadow(0 0 30px rgba(139,92,246,0.9)); }
-        }
-        @keyframes pulseScale {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.15); }
-        }
-        @keyframes pulseOpacity {
-          0%, 100% { opacity: 0.8; }
-          50% { opacity: 1; }
-        }
-        @keyframes hover {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-
-        /* ----- background overlay & shine (unchanged) ----- */
-        .dt-hero::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(circle at 30% 40%, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
-          animation: overlayBreath 6s infinite ease-in-out;
+          pointer-events: none;
           z-index: 1;
         }
-
-        @keyframes overlayBreath {
-          0%, 100% { opacity: 0.7; }
-          50% { opacity: 0.9; }
-        }
-
-        .dt-hero::before {
-          content: '';
+        .particle {
           position: absolute;
-          inset: 0;
-          background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
-          animation: shineSlide 12s infinite linear;
-          z-index: 1;
+          width: 3px;
+          height: 3px;
+          background: rgba(37,99,235,0.2);
+          border-radius: 50%;
+          box-shadow: 0 0 8px rgba(37,99,235,0.3);
+          animation: float-particle 18s infinite linear;
+        }
+        @keyframes float-particle {
+          0% { transform: translateY(0) translateX(0); opacity: 0; }
+          10% { opacity: 0.8; }
+          90% { opacity: 0.6; }
+          100% { transform: translateY(-120px) translateX(80px); opacity: 0; }
         }
 
-        @keyframes shineSlide {
-          0% { transform: translateX(-150%) translateY(-150%) rotate(25deg); }
-          100% { transform: translateX(150%) translateY(150%) rotate(25deg); }
-        }
-
-        /* ========== CONTENT – UNCHANGED ========== */
-        .dt-hero-content {
-          position: absolute;
-          bottom: 48px;
-          left: 50%;
-          transform: translateX(-50%);
-          max-width: 1200px;
-          width: 100%;
-          padding: 0 24px;
-          color: #ffffff;
-          z-index: 2;
-        }
-
-        .dt-tag {
-          display: inline-block;
-          background: linear-gradient(135deg, #0ea5e9, #3b82f6);
-          padding: 6px 14px;
-          font-size: 13px;
-          font-weight: 600;
-          text-transform: uppercase;
-          margin-bottom: 14px;
-          animation: tagEntrance 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-          box-shadow: 0 4px 25px rgba(14,165,233,0.5), 0 0 50px rgba(59,130,246,0.3);
-          position: relative;
-          overflow: hidden;
-        }
-
-        .dt-tag::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-          animation: tagGlow 3s infinite;
-        }
-
-        @keyframes tagEntrance {
-          from { opacity: 0; transform: translateX(-30px) scale(0.8); }
-          to { opacity: 1; transform: translateX(0) scale(1); }
-        }
-
-        @keyframes tagGlow {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(200%); }
-        }
-
-        .dt-hero-content h1 {
-          font-size: 46px;
-          font-weight: 900;
-          line-height: 1.2;
-          max-width: 800px;
-          animation: titleEntrance 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
-          text-shadow: 0 4px 30px rgba(0,0,0,0.5), 0 8px 60px rgba(59,130,246,0.4);
-          position: relative;
-        }
-
-        .dt-hero-content h1::after {
-          content: '';
-          position: absolute;
-          bottom: -10px;
-          left: 0;
-          width: 0;
-          height: 4px;
-          background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
-          animation: titleUnderline 1.2s ease-out 0.8s forwards;
-          box-shadow: 0 0 20px rgba(14,165,233,0.8);
-        }
-
-        @keyframes titleEntrance {
-          from { opacity: 0; transform: translateY(50px) scale(0.9); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes titleUnderline {
-          to { width: 140px; }
-        }
-
-        .dt-wrapper {
+        /* Content wrapper */
+        .content-wrapper {
           max-width: 1200px;
           margin: 0 auto;
           padding: 80px 24px;
-        }
-
-        .dt-intro {
-          font-size: 18px;
-          line-height: 1.8;
-          color: #374151;
-          max-width: 900px;
-          margin-bottom: 70px;
-        }
-
-        .dt-block {
-          max-width: 900px;
-          margin-bottom: 56px;
           position: relative;
-          padding-left: 80px;
+          z-index: 10;
         }
 
-        .dt-block-icon {
+        /* ---------- HERO SECTION ---------- */
+        .hero {
+          position: relative;
+          height: 500px;
+          margin-bottom: 80px;
+          border-radius: 32px;
+          overflow: hidden;
+          background: linear-gradient(135deg, #0a2b5e, #1e3a8a, #312e81, #4c1d95);
+          box-shadow: 0 30px 50px -20px rgba(0,0,0,0.4);
+        }
+        .hero-animation {
           position: absolute;
-          left: 0;
-          top: 0;
-          width: 60px;
-          height: 60px;
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-          border-radius: 12px;
+          inset: 0;
+          opacity: 0.7;
+        }
+        .hero-svg-icon {
+          position: absolute;
+          width: 90px;
+          height: 90px;
+          filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
+          animation: float-hero 12s infinite alternate;
+        }
+        @keyframes float-hero {
+          0% { transform: translateY(0) translateX(0); }
+          100% { transform: translateY(-25px) translateX(15px); }
+        }
+        .hero-content {
+          position: absolute;
+          bottom: 60px;
+          left: 60px;
+          color: white;
+          z-index: 10;
+          max-width: 700px;
+        }
+        .hero-tag {
+          display: inline-block;
+          background: rgba(255,255,255,0.15);
+          backdrop-filter: blur(6px);
+          padding: 6px 16px;
+          border-radius: 40px;
+          font-size: 14px;
+          font-weight: 600;
+          letter-spacing: 1px;
+          margin-bottom: 20px;
+          border: 1px solid rgba(255,255,255,0.3);
+        }
+        .hero-title {
+          font-size: 56px;
+          font-weight: 900;
+          line-height: 1.1;
+          margin-bottom: 16px;
+          text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+        }
+        .hero-subtitle {
+          font-size: 20px;
+          opacity: 0.9;
+          font-weight: 400;
+        }
+
+        /* Section headers */
+        .section-header {
+          text-align: center;
+          margin-bottom: 50px;
+        }
+        .section-title {
+          font-size: 38px;
+          font-weight: 800;
+          color: #0f172a;
+          margin-bottom: 12px;
+        }
+        .section-title span {
+          background: linear-gradient(145deg, #2563eb, #7c3aed);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        .section-divider {
+          width: 80px;
+          height: 4px;
+          background: linear-gradient(90deg, #2563eb, #7c3aed);
+          margin: 0 auto;
+          border-radius: 2px;
+        }
+
+        /* ---------- CLIENT OVERVIEW CARD ---------- */
+        .client-card {
+          background: rgba(255,255,255,0.75);
+          backdrop-filter: blur(10px);
+          border-radius: 28px;
+          padding: 40px;
+          margin-bottom: 80px;
+          border: 1px solid rgba(255,255,255,0.6);
+          box-shadow: 0 25px 40px -15px rgba(0,0,0,0.1);
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr 1fr;
+          gap: 30px;
+        }
+        .client-item {
+          text-align: center;
+        }
+        .client-label {
+          font-size: 14px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: #64748b;
+          margin-bottom: 8px;
+        }
+        .client-value {
+          font-size: 20px;
+          font-weight: 700;
+          color: #0f172a;
+        }
+
+        /* ---------- CHALLENGES ---------- */
+        .challenges-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 25px;
+          margin-bottom: 80px;
+        }
+        .challenge-card {
+          background: white;
+          border-radius: 24px;
+          padding: 28px;
+          display: flex;
+          gap: 20px;
+          align-items: flex-start;
+          box-shadow: 0 10px 25px -10px rgba(0,0,0,0.05);
+          border: 1px solid #eef2f6;
+          transition: all 0.3s ease;
+        }
+        .challenge-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 25px 35px -12px rgba(37,99,235,0.15);
+          border-color: #2563eb30;
+        }
+        .challenge-icon {
+          width: 48px;
+          height: 48px;
+          flex-shrink: 0;
+          background: linear-gradient(145deg, #2563eb10, #7c3aed10);
+          border-radius: 14px;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+          color: #2563eb;
         }
-
-        .dt-block-icon svg {
-          width: 32px;
-          height: 32px;
-          fill: white;
-        }
-
-        .dt-block h2 {
-          font-size: 26px;
-          font-weight: 800;
-          color: #111827;
-          margin-bottom: 14px;
-        }
-
-        .dt-block p {
+        .challenge-text {
           font-size: 16px;
-          line-height: 1.8;
-          color: #4b5563;
+          line-height: 1.6;
+          color: #334155;
+        }
+
+        /* ---------- SOLUTION TIMELINE ---------- */
+        .timeline {
+          display: flex;
+          justify-content: space-between;
+          margin: 60px 0 80px;
+          position: relative;
+        }
+        .timeline::before {
+          content: "";
+          position: absolute;
+          top: 30px;
+          left: 10%;
+          width: 80%;
+          height: 2px;
+          background: linear-gradient(90deg, #2563eb, #7c3aed);
+          opacity: 0.3;
+          z-index: 0;
+        }
+        .timeline-step {
+          position: relative;
+          z-index: 2;
+          background: white;
+          width: 220px;
+          padding: 24px;
+          border-radius: 20px;
+          box-shadow: 0 10px 25px -8px rgba(0,0,0,0.08);
+          border: 1px solid #f1f5f9;
+          transition: transform 0.3s ease;
+        }
+        .timeline-step:hover {
+          transform: scale(1.05);
+        }
+        .step-number {
+          width: 50px;
+          height: 50px;
+          background: linear-gradient(145deg, #2563eb, #7c3aed);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-weight: 700;
+          font-size: 22px;
           margin-bottom: 16px;
         }
-
-        .dt-list {
-          padding-left: 18px;
-          color: #4b5563;
-          line-height: 1.75;
+        .step-title {
+          font-size: 18px;
+          font-weight: 700;
+          margin-bottom: 8px;
+          color: #0f172a;
+        }
+        .step-desc {
+          font-size: 14px;
+          color: #475569;
+          line-height: 1.5;
         }
 
-        .dt-list li {
-          margin-bottom: 10px;
+        /* ---------- ARCHITECTURE ILLUSTRATION ---------- */
+        .architecture {
+          background: rgba(255,255,255,0.6);
+          backdrop-filter: blur(8px);
+          border-radius: 36px;
+          padding: 50px 40px;
+          margin-bottom: 80px;
+          border: 1px solid rgba(255,255,255,0.7);
+          text-align: center;
+        }
+        .arch-diagram {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 30px;
+          flex-wrap: wrap;
+          margin: 40px 0 20px;
+        }
+        .arch-item {
+          width: 100px;
+          height: 100px;
+          background: white;
+          border-radius: 30px;
+          box-shadow: 0 15px 30px -12px rgba(0,0,0,0.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 15px;
+          transition: all 0.3s ease;
+          border: 1px solid #e9eef3;
+        }
+        .arch-item:hover {
+          transform: translateY(-8px);
+          border-color: #2563eb;
+        }
+        .arch-item svg {
+          width: 40px;
+          height: 40px;
+          margin-bottom: 8px;
+        }
+        .arch-connector {
+          font-size: 28px;
+          color: #2563eb;
+          font-weight: 300;
         }
 
-        .dt-outcomes {
+        /* ---------- RESULTS ---------- */
+        .results-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 28px;
-          max-width: 1100px;
-          margin: 40px 0 70px;
+          gap: 30px;
+          margin: 50px 0 80px;
         }
-
-        .dt-outcome {
-          background: rgba(255,255,255,0.85);
-          border: 1px solid #e5e7eb;
-          padding: 26px;
+        .result-card {
+          background: white;
+          border-radius: 28px;
+          padding: 30px 20px;
+          text-align: center;
+          box-shadow: 0 20px 35px -12px rgba(0,0,0,0.05);
+          border: 1px solid #f0f4f9;
         }
-
-        .dt-outcome strong {
-          display: block;
-          font-size: 30px;
+        .result-number {
+          font-size: 44px;
           font-weight: 900;
+          background: linear-gradient(145deg, #2563eb, #7c3aed);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin-bottom: 10px;
+          line-height: 1;
+        }
+        .result-label {
+          font-size: 16px;
+          color: #475569;
+        }
+
+        /* ---------- TESTIMONIAL ---------- */
+        .testimonial {
+          background: linear-gradient(145deg, #2563eb08, #7c3aed08);
+          border-left: 6px solid #2563eb;
+          padding: 40px 50px;
+          border-radius: 30px;
+          margin-bottom: 80px;
+          position: relative;
+          overflow: hidden;
+        }
+        .testimonial::before {
+          content: "“";
+          position: absolute;
+          top: -10px;
+          left: 20px;
+          font-size: 150px;
+          font-family: serif;
+          color: #2563eb10;
+          pointer-events: none;
+        }
+        .testimonial-quote {
+          font-size: 22px;
+          line-height: 1.5;
+          color: #1e293b;
+          margin-bottom: 20px;
+          position: relative;
+          z-index: 2;
+        }
+        .testimonial-author {
+          font-size: 16px;
+          font-weight: 600;
           color: #2563eb;
-          margin-bottom: 6px;
         }
 
-        .dt-outcome span {
-          font-size: 14px;
-          color: #6b7280;
-        }
-
-        .dt-quote {
-          max-width: 900px;
-          background: rgba(37,99,235,0.06);
-          border-left: 4px solid #2563eb;
-          padding: 32px;
-          font-size: 17px;
-          line-height: 1.7;
-          color: #1f2937;
+        /* ---------- RELATED SERVICES ---------- */
+        .related-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 25px;
           margin-bottom: 60px;
         }
-
-        .dt-quote span {
-          display: block;
-          margin-top: 12px;
-          font-size: 14px;
-          color: #6b7280;
+        .service-card {
+          background: white;
+          border-radius: 24px;
+          padding: 30px 25px;
+          border: 1px solid #eef2f6;
+          transition: all 0.3s ease;
         }
-
-        .dt-back a {
+        .service-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 25px 35px -15px rgba(37,99,235,0.15);
+          border-color: #2563eb;
+        }
+        .service-icon {
+          width: 56px;
+          height: 56px;
+          background: linear-gradient(145deg, #2563eb10, #7c3aed10);
+          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 20px;
+          color: #2563eb;
+        }
+        .service-title {
+          font-size: 20px;
+          font-weight: 700;
+          margin-bottom: 10px;
+          color: #0f172a;
+        }
+        .service-desc {
+          font-size: 14px;
+          color: #475569;
+          line-height: 1.6;
+          margin-bottom: 20px;
+        }
+        .service-link {
           font-weight: 600;
           color: #2563eb;
           text-decoration: none;
+          border-bottom: 2px solid transparent;
+          transition: border-color 0.2s;
+        }
+        .service-link:hover {
+          border-bottom-color: #2563eb;
         }
 
-        .dt-back a:hover {
-          text-decoration: underline;
+        /* ---------- BACK LINK ---------- */
+        .back-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #2563eb;
+          text-decoration: none;
+          padding: 12px 28px;
+          background: white;
+          border-radius: 50px;
+          box-shadow: 0 8px 18px -8px rgba(0,0,0,0.08);
+          transition: all 0.3s ease;
+        }
+        .back-link:hover {
+          background: #2563eb;
+          color: white;
+          transform: translateX(-5px);
         }
 
-        @media (max-width: 900px) {
-          .dt-hero {
-            height: 340px;
-          }
-          .dt-hero-content h1 {
-            font-size: 34px;
-          }
-          .dt-outcomes {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .dt-svg-icon {
-            width: 60px;
-            height: 60px;
-          }
-          .dt-block {
-            padding-left: 0;
-          }
-          .dt-block-icon {
-            position: relative;
-            margin-bottom: 15px;
-          }
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1100px) {
+          .client-card { grid-template-columns: 1fr 1fr; }
+          .timeline { flex-wrap: wrap; justify-content: center; gap: 20px; }
+          .timeline::before { display: none; }
+          .results-grid { grid-template-columns: repeat(2, 1fr); }
+          .related-grid { grid-template-columns: repeat(2, 1fr); }
         }
-
+        @media (max-width: 768px) {
+          .hero-title { font-size: 42px; }
+          .hero-content { left: 30px; bottom: 30px; }
+          .client-card { grid-template-columns: 1fr; }
+          .challenges-grid { grid-template-columns: 1fr; }
+          .related-grid { grid-template-columns: 1fr; }
+          .testimonial-quote { font-size: 18px; }
+          .section-title { font-size: 30px; }
+        }
         @media (max-width: 520px) {
-          .dt-outcomes {
-            grid-template-columns: 1fr;
-          }
+          .hero-title { font-size: 32px; }
+          .hero { height: 400px; }
+          .results-grid { grid-template-columns: 1fr; }
         }
       `}</style>
 
-      {/* HERO – COLORFUL, ANIMATED SVG ICONS */}
-      <div className="dt-hero">
-        <div className="dt-hero-animation">
-          {/* Cloud Icon – digital transformation foundation */}
-          <div className="dt-svg-icon cloud-icon" style={{ top: '15%', left: '5%', width: '90px', height: '90px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#38bdf8" />
-                  <stop offset="100%" stopColor="#6366f1" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M75 60 Q85 50 75 40 Q70 25 55 30 Q45 15 30 25 Q15 30 20 45 Q10 60 25 70 Q35 80 50 75 Q65 85 75 75 Q90 70 75 60Z"
-                fill="url(#cloudGrad)"
-                opacity="0.9"
-              />
-              <circle cx="45" cy="45" r="5" fill="white" opacity="0.6">
-                <animate attributeName="r" values="5;7;5" dur="3s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="65" cy="55" r="4" fill="white" opacity="0.6">
-                <animate attributeName="r" values="4;6;4" dur="2.5s" repeatCount="indefinite" />
-              </circle>
+      {/* ---------- COSMIC PARTICLES ---------- */}
+      <div className="particle-field">
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={i}
+            className="particle"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 15}s`,
+              width: `${Math.random() * 5 + 2}px`,
+              height: `${Math.random() * 5 + 2}px`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* ---------- HERO ---------- */}
+      <div className="hero">
+        <div className="hero-animation">
+          {/* Animated SVG icons */}
+          <div className="hero-svg-icon" style={{ top: '15%', left: '10%' }}>
+            <svg viewBox="0 0 100 100" width="80" height="80">
+              <defs><linearGradient id="c1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#38bdf8"/><stop offset="100%" stopColor="#6366f1"/></linearGradient></defs>
+              <path d="M75 60 Q85 50 75 40 Q70 25 55 30 Q45 15 30 25 Q15 30 20 45 Q10 60 25 70 Q35 80 50 75 Q65 85 75 75 Q90 70 75 60Z" fill="url(#c1)" opacity="0.9"/>
             </svg>
           </div>
-
-          {/* Microservices blocks */}
-          <div className="dt-svg-icon microservice-icon" style={{ top: '60%', left: '80%', width: '70px', height: '70px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="microGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f97316" />
-                  <stop offset="100%" stopColor="#eab308" />
-                </linearGradient>
-              </defs>
-              <rect x="20" y="20" width="25" height="25" rx="4" fill="url(#microGrad)" opacity="0.9">
-                <animate attributeName="y" values="20;15;20" dur="3s" repeatCount="indefinite" />
-              </rect>
-              <rect x="55" y="30" width="25" height="25" rx="4" fill="url(#microGrad)" opacity="0.8">
-                <animate attributeName="x" values="55;50;55" dur="3.4s" repeatCount="indefinite" />
-              </rect>
-              <rect x="30" y="60" width="25" height="25" rx="4" fill="url(#microGrad)" opacity="0.7">
-                <animate attributeName="width" values="25;28;25" dur="2.8s" repeatCount="indefinite" />
-              </rect>
+          <div className="hero-svg-icon" style={{ top: '60%', left: '80%', animationDuration: '16s' }}>
+            <svg viewBox="0 0 100 100" width="70" height="70">
+              <polygon points="50,15 80,70 50,60 20,70" fill="#f43f5e" opacity="0.9"/>
             </svg>
           </div>
-
-          {/* Kubernetes helm / wheel */}
-          <div className="dt-svg-icon kubernetes-icon" style={{ top: '25%', left: '75%', width: '85px', height: '85px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="kubeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#3b82f6" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
-                </linearGradient>
-              </defs>
-              <circle cx="50" cy="50" r="35" fill="none" stroke="url(#kubeGrad)" strokeWidth="6" strokeDasharray="6 6">
-                <animate attributeName="stroke-dashoffset" values="0;200;0" dur="10s" repeatCount="indefinite" />
-              </circle>
-              <path d="M50 15 L50 35 M50 65 L50 85 M15 50 L35 50 M65 50 L85 50" stroke="url(#kubeGrad)" strokeWidth="5" strokeLinecap="round" />
-              <circle cx="50" cy="50" r="8" fill="white" opacity="0.8">
-                <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite" />
-              </circle>
+          <div className="hero-svg-icon" style={{ top: '25%', left: '85%', animationDuration: '14s' }}>
+            <svg viewBox="0 0 100 100" width="60" height="60">
+              <circle cx="50" cy="50" r="35" fill="none" stroke="#8b5cf6" strokeWidth="6" strokeDasharray="6 6"/>
             </svg>
           </div>
-
-          {/* Code brackets – DevOps / CI/CD */}
-          <div className="dt-svg-icon code-icon" style={{ top: '70%', left: '15%', width: '75px', height: '75px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="codeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#06b6d4" />
-                  <stop offset="100%" stopColor="#3b82f6" />
-                </linearGradient>
-              </defs>
-              <path d="M30 35 L15 50 L30 65" stroke="url(#codeGrad)" strokeWidth="8" fill="none" strokeLinecap="round">
-                <animate attributeName="stroke-width" values="8;10;8" dur="2s" repeatCount="indefinite" />
-              </path>
-              <path d="M70 35 L85 50 L70 65" stroke="url(#codeGrad)" strokeWidth="8" fill="none" strokeLinecap="round">
-                <animate attributeName="stroke-width" values="8;10;8" dur="2.2s" repeatCount="indefinite" />
-              </path>
-              <circle cx="50" cy="50" r="6" fill="url(#codeGrad)">
-                <animate attributeName="r" values="6;9;6" dur="2.4s" repeatCount="indefinite" />
-              </circle>
-            </svg>
-          </div>
-
-          {/* Gear – automation */}
-          <div className="dt-svg-icon gear-icon" style={{ top: '40%', left: '45%', width: '65px', height: '65px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="gearGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#a78bfa" />
-                  <stop offset="100%" stopColor="#ec4899" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M50 20 L60 30 L70 30 L75 40 L70 50 L75 60 L70 70 L60 70 L50 80 L40 70 L30 70 L25 60 L30 50 L25 40 L30 30 L40 30 Z"
-                fill="none"
-                stroke="url(#gearGrad)"
-                strokeWidth="6"
-              />
-              <circle cx="50" cy="50" r="15" fill="url(#gearGrad)" opacity="0.8" />
-            </svg>
-          </div>
-
-          {/* Rocket – innovation / transformation */}
-          <div className="dt-svg-icon rocket-icon" style={{ top: '10%', left: '60%', width: '80px', height: '80px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="rocketGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f43f5e" />
-                  <stop offset="100%" stopColor="#eab308" />
-                </linearGradient>
-              </defs>
-              <polygon points="50,15 80,70 50,60 20,70" fill="url(#rocketGrad)" opacity="0.9">
-                <animate attributeName="points" dur="3s" repeatCount="indefinite"
-                  values="50,15 80,70 50,60 20,70;
-                          50,10 80,65 50,55 20,65;
-                          50,15 80,70 50,60 20,70" />
-              </polygon>
-              <circle cx="50" cy="55" r="5" fill="white" opacity="0.8">
-                <animate attributeName="r" values="5;7;5" dur="1.5s" repeatCount="indefinite" />
-              </circle>
-            </svg>
-          </div>
-
-          {/* Database – data / storage */}
-          <div className="dt-svg-icon database-icon" style={{ top: '75%', left: '50%', width: '70px', height: '70px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="dbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#3b82f6" />
-                </linearGradient>
-              </defs>
-              <ellipse cx="50" cy="35" rx="30" ry="12" fill="url(#dbGrad)" opacity="0.9" />
-              <path d="M20 35 L20 65" stroke="url(#dbGrad)" strokeWidth="8" />
-              <path d="M80 35 L80 65" stroke="url(#dbGrad)" strokeWidth="8" />
-              <ellipse cx="50" cy="65" rx="30" ry="12" fill="url(#dbGrad)" opacity="0.7" />
-              <ellipse cx="50" cy="50" rx="30" ry="12" fill="url(#dbGrad)" opacity="0.5" />
-            </svg>
-          </div>
-
-          {/* Network / connected nodes */}
-          <div className="dt-svg-icon network-icon" style={{ top: '30%', left: '20%', width: '90px', height: '90px' }}>
-            <svg viewBox="0 0 100 100">
-              <defs>
-                <linearGradient id="netGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#8b5cf6" />
-                  <stop offset="100%" stopColor="#ec4899" />
-                </linearGradient>
-              </defs>
-              <circle cx="30" cy="30" r="8" fill="url(#netGrad)">
-                <animate attributeName="r" values="8;11;8" dur="2s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="70" cy="40" r="8" fill="url(#netGrad)">
-                <animate attributeName="r" values="8;11;8" dur="2.3s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="50" cy="70" r="8" fill="url(#netGrad)">
-                <animate attributeName="r" values="8;11;8" dur="2.6s" repeatCount="indefinite" />
-              </circle>
-              <path d="M30 30 L70 40" stroke="url(#netGrad)" strokeWidth="3" strokeDasharray="4 4">
-                <animate attributeName="stroke-dashoffset" values="0;50;0" dur="4s" repeatCount="indefinite" />
-              </path>
-              <path d="M70 40 L50 70" stroke="url(#netGrad)" strokeWidth="3" strokeDasharray="4 4">
-                <animate attributeName="stroke-dashoffset" values="0;50;0" dur="4.2s" repeatCount="indefinite" />
-              </path>
-              <path d="M50 70 L30 30" stroke="url(#netGrad)" strokeWidth="3" strokeDasharray="4 4">
-                <animate attributeName="stroke-dashoffset" values="0;50;0" dur="4.4s" repeatCount="indefinite" />
-              </path>
+          <div className="hero-svg-icon" style={{ top: '70%', left: '20%', animationDuration: '18s' }}>
+            <svg viewBox="0 0 100 100" width="75" height="75">
+              <ellipse cx="50" cy="35" rx="30" ry="12" fill="#10b981" opacity="0.8"/>
             </svg>
           </div>
         </div>
-
-        <div className="dt-hero-content">
-          <span className="dt-tag">Technology</span>
-          <h1>Digital Transformation</h1>
+        <div className="hero-content">
+          <span className="hero-tag">CASE STUDY</span>
+          <h1 className="hero-title">Cloud Migration & Cost Optimization</h1>
+          <p className="hero-subtitle">for a Global Investment Bank</p>
         </div>
       </div>
 
-      {/* ========== CONTENT – EXACTLY THE SAME ========== */}
-      <div className="dt-wrapper">
-        <p className="dt-intro">
-          A large-scale digital transformation initiative focused on modernizing
-          legacy platforms, improving operational agility, and enabling
-          continuous innovation across the enterprise.
-        </p>
-
-        <div className="dt-block">
-          <div className="dt-block-icon">
-            <svg viewBox="0 0 24 24">
-              <path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/>
-            </svg>
+      <div className="content-wrapper">
+        {/* ---------- CLIENT OVERVIEW ---------- */}
+        <div className="client-card">
+          <div className="client-item">
+            <div className="client-label">Client</div>
+            <div className="client-value">{caseData.client}</div>
           </div>
-          <h2>Business Context</h2>
-          <p>
-            The organization operated with complex, tightly coupled systems that
-            had evolved over decades. These systems constrained scalability,
-            slowed innovation, and increased costs.
-          </p>
-        </div>
-
-        <div className="dt-block">
-          <div className="dt-block-icon">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-            </svg>
+          <div className="client-item">
+            <div className="client-label">Industry</div>
+            <div className="client-value">{caseData.industry}</div>
           </div>
-          <h2>Core Challenges</h2>
-          <ul className="dt-list">
-            <li>Monolithic architectures limiting speed and flexibility</li>
-            <li>High infrastructure and operational costs</li>
-            <li>Manual and slow release cycles</li>
-            <li>Limited resilience and observability</li>
-            <li>Skill gaps in cloud-native practices</li>
-          </ul>
-        </div>
-
-        <div className="dt-block">
-          <div className="dt-block-icon">
-            <svg viewBox="0 0 24 24">
-              <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
-            </svg>
+          <div className="client-item">
+            <div className="client-label">Location</div>
+            <div className="client-value">{caseData.location}</div>
           </div>
-          <h2>Transformation Approach</h2>
-          <ul className="dt-list">
-            <li>Cloud-native microservices architecture</li>
-            <li>DevOps-driven CI/CD automation</li>
-            <li>Kubernetes-based container orchestration</li>
-            <li>Security-first governance framework</li>
-            <li>Enablement of internal engineering teams</li>
-          </ul>
-        </div>
-
-        <div className="dt-block">
-          <h2>Measurable Outcomes</h2>
-          <div className="dt-outcomes">
-            <div className="dt-outcome">
-              <strong>60%</strong>
-              <span>Faster deployments</span>
-            </div>
-            <div className="dt-outcome">
-              <strong>40%</strong>
-              <span>Cost savings</span>
-            </div>
-            <div className="dt-outcome">
-              <strong>3×</strong>
-              <span>Feature velocity</span>
-            </div>
-            <div className="dt-outcome">
-              <strong>99.9%</strong>
-              <span>Application uptime</span>
-            </div>
+          <div className="client-item">
+            <div className="client-label">Scope</div>
+            <div className="client-value">{caseData.scope}</div>
           </div>
         </div>
 
-        <div className="dt-quote">
-          “This transformation fundamentally changed how we deliver technology
-          and compete in a digital-first market.”
-          <span>— CTO, Fortune 500 Enterprise</span>
+        {/* ---------- CHALLENGES ---------- */}
+        <div className="section-header">
+          <h2 className="section-title">The <span>Challenge</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="challenges-grid">
+          {caseData.challenge.map((item, idx) => (
+            <div className="challenge-card" key={idx}>
+              <div className="challenge-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <div className="challenge-text">{item}</div>
+            </div>
+          ))}
         </div>
 
-        <div className="dt-back">
-          <a href="/">← Back to Home</a>
+        {/* ---------- SOLUTION TIMELINE ---------- */}
+        <div className="section-header">
+          <h2 className="section-title">Our <span>Solution</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="timeline">
+          {caseData.solutionSteps.map((step, idx) => (
+            <div className="timeline-step" key={idx}>
+              <div className="step-number">{idx + 1}</div>
+              <div className="step-title">{step.title}</div>
+              <div className="step-desc">{step.desc}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ---------- ARCHITECTURE HIGHLIGHT ---------- */}
+        <div className="architecture">
+          <h3 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '20px' }}>Target Architecture</h3>
+          <div className="arch-diagram">
+            <div className="arch-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="1.5"><rect x="2" y="2" width="20" height="20" rx="4" /></svg>
+              <span>On‑prem</span>
+            </div>
+            <span className="arch-connector">→</span>
+            <div className="arch-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
+              <span>AWS</span>
+            </div>
+            <span className="arch-connector">+</span>
+            <div className="arch-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb"><path d="M4 4h16v16H4z"/><path d="M8 8h8v8H8z"/></svg>
+              <span>Azure</span>
+            </div>
+            <span className="arch-connector">⚙️</span>
+            <div className="arch-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb"><circle cx="12" cy="12" r="8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+              <span>K8s</span>
+            </div>
+          </div>
+          <p style={{ color: '#475569', marginTop: '20px' }}>Multi‑cloud foundation with automated CI/CD and infrastructure‑as‑code.</p>
+        </div>
+
+        {/* ---------- RESULTS ---------- */}
+        <div className="section-header">
+          <h2 className="section-title">Key <span>Outcomes</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="results-grid">
+          {caseData.results.map((result, idx) => (
+            <div className="result-card" key={idx}>
+              <div
+                className="result-number"
+                ref={(el) => (countersRef.current[idx] = el)}
+                data-target={result.value}
+              >
+                0{result.suffix === "%" ? "%" : ""}
+              </div>
+              <div className="result-label">{result.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ---------- TESTIMONIAL ---------- */}
+        <div className="testimonial">
+          <div className="testimonial-quote">{caseData.testimonial.quote}</div>
+          <div className="testimonial-author">— {caseData.testimonial.author}</div>
+        </div>
+
+        {/* ---------- RELATED SERVICES ---------- */}
+        <div className="section-header">
+          <h2 className="section-title">Explore <span>More</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="related-grid">
+          <div className="service-card">
+            <div className="service-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M12 22V12"/></svg>
+            </div>
+            <div className="service-title">SAP S/4HANA</div>
+            <div className="service-desc">End‑to‑end ERP transformation for global enterprises.</div>
+            <a href="#" className="service-link">Learn more →</a>
+          </div>
+          <div className="service-card">
+            <div className="service-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="2.18"/><path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5"/></svg>
+            </div>
+            <div className="service-title">Hyperion EPM</div>
+            <div className="service-desc">Financial close & planning modernization.</div>
+            <a href="#" className="service-link">Learn more →</a>
+          </div>
+          <div className="service-card">
+            <div className="service-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 0 0 0 20 15 15 0 0 0 0-20z"/><path d="M2 12h20"/></svg>
+            </div>
+            <div className="service-title">AI & Analytics</div>
+            <div className="service-desc">Predictive insights and real‑time intelligence.</div>
+            <a href="#" className="service-link">Learn more →</a>
+          </div>
+        </div>
+
+        {/* ---------- BACK LINK ---------- */}
+        <div style={{ textAlign: 'center' }}>
+          <a href="/" className="back-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Home
+          </a>
         </div>
       </div>
     </section>

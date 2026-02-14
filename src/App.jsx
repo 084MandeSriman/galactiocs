@@ -85,23 +85,23 @@ export default function App() {
 
         {/* CASE STUDIES */}
         <Route
-          path="/case-study/digital-transformation"
+          path="/case-studies/cloud-migration-bank"
           element={<DigitalTransformation />}
         />
         <Route
-          path="/case-study/life-sciences-innovation"
+          path="/case-studies/sap-s4hana-manufacturing"
           element={<LifeSciencesInnovation />}
         />
         <Route
-          path="/case-study/financial-services-modernization"
+          path="/case-studies/hyperion-epm-retail"
           element={<FinancialServicesModernization />}
         />
         <Route
-          path="/case-study/hedge-fund-platforms"
+          path="/case-studies/rpa-healthcare"
           element={<HedgeFundPlatforms />}
         />
         <Route
-          path="/case-study/genai-enablement"
+          path="/case-studies/ai-retail-forecasting"
           element={<GenAIEnablement />}
         />
         <Route
