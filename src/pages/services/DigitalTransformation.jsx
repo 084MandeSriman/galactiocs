@@ -1,37 +1,170 @@
 import React, { useEffect, useRef } from "react";
 
 export default function CloudMigrationCaseStudy() {
-  // ========== ANIMATED COUNTERS ==========
+  // ========== REFS ==========
+  const animatedElements = useRef([]);
   const countersRef = useRef([]);
+  const canvasRef = useRef(null);
+  const mouseRef = useRef({ x: 0, y: 0 });
 
+  // ========== HERO CANVAS ANIMATION ==========
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let width, height;
+    let particles = [];
+    const particleCount = 80;
+    let animationFrame;
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight * 0.8; // hero height is 500px, but we'll set canvas to hero's container height
+      const hero = document.querySelector(".hero");
+      if (hero) {
+        width = hero.offsetWidth;
+        height = hero.offsetHeight;
+      }
+      canvas.width = width;
+      canvas.height = height;
+    };
+
+    const createParticles = () => {
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          radius: Math.random() * 2 + 1,
+        });
+      }
+    };
+
+    const drawParticles = () => {
+      ctx.clearRect(0, 0, width, height);
+      // Update positions
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Wrap around edges
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        // Mouse repulsion
+        const dx = p.x - mouseRef.current.x;
+        const dy = p.y - mouseRef.current.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) {
+          const angle = Math.atan2(dy, dx);
+          const force = (100 - dist) / 1000;
+          p.x += Math.cos(angle) * force * 10;
+          p.y += Math.sin(angle) * force * 10;
+        }
+      });
+
+      // Draw connections
+      ctx.strokeStyle = "rgba(255,255,255,0.15)";
+      ctx.lineWidth = 0.8;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw particles
+      particles.forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.7)";
+        ctx.shadowColor = "rgba(255,255,255,0.5)";
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      animationFrame = requestAnimationFrame(drawParticles);
+    };
+
+    const handleMouseMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+    };
+
+    const init = () => {
+      resize();
+      createParticles();
+      canvas.addEventListener("mousemove", handleMouseMove);
+      drawParticles();
+    };
+
+    init();
+
+    window.addEventListener("resize", () => {
+      resize();
+      createParticles();
+    });
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  // ========== SCROLL ANIMATIONS (FADE-UP) ==========
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const counter = entry.target;
-            const target = +counter.getAttribute("data-target");
-            let count = 0;
-            const updateCount = () => {
-              const increment = target / 50; // smooth increment
-              if (count < target) {
-                count = Math.min(count + increment, target);
-                counter.innerText = Math.round(count) + (counter.classList.contains("percent") ? "%" : "");
-                requestAnimationFrame(updateCount);
-              } else {
-                counter.innerText = target + (counter.classList.contains("percent") ? "%" : "");
-              }
-            };
-            updateCount();
-            observer.unobserve(counter);
+            entry.target.classList.add("visible");
+            // Start counters if it's a result number
+            if (entry.target.classList.contains("result-number")) {
+              const counter = entry.target;
+              const target = +counter.getAttribute("data-target");
+              let count = 0;
+              const updateCount = () => {
+                const increment = target / 50;
+                if (count < target) {
+                  count = Math.min(count + increment, target);
+                  counter.innerText =
+                    Math.round(count) +
+                    (counter.classList.contains("percent") ? "%" : "");
+                  requestAnimationFrame(updateCount);
+                } else {
+                  counter.innerText =
+                    target + (counter.classList.contains("percent") ? "%" : "");
+                }
+              };
+              updateCount();
+              observer.unobserve(counter);
+            } else {
+              observer.unobserve(entry.target);
+            }
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.2, rootMargin: "0px 0px -50px 0px" }
     );
 
-    countersRef.current.forEach((counter) => {
-      if (counter) observer.observe(counter);
+    animatedElements.current.forEach((el) => {
+      if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
@@ -78,13 +211,96 @@ export default function CloudMigrationCaseStudy() {
         "Galacticos delivered a flawless migration during one of the most volatile market periods. Our trading platforms are now more resilient, scalable, and cost‑effective than ever.",
       author: "CIO, Global Investment Bank",
     },
+    techStack: [
+      { name: "AWS", icon: "aws" },
+      { name: "Azure", icon: "azure" },
+      { name: "Kubernetes", icon: "k8s" },
+      { name: "Terraform", icon: "tf" },
+      { name: "Docker", icon: "docker" },
+      { name: "Kafka", icon: "kafka" },
+    ],
+    journey: [
+      { phase: "Discovery", duration: "2 weeks", desc: "Dependency mapping and assessment." },
+      { phase: "Foundation", duration: "1 month", desc: "Landing zones and connectivity." },
+      { phase: "Wave 1", duration: "3 months", desc: "50 low-risk apps migrated." },
+      { phase: "Wave 2", duration: "4 months", desc: "Core trading platforms re-platformed." },
+      { phase: "Optimization", duration: "Ongoing", desc: "FinOps and auto-scaling." },
+    ],
+    benefits: [
+      { title: "99.9% Uptime", desc: "During peak trading hours with auto-scaling." },
+      { title: "$2.5M Saved", desc: "Annual infrastructure cost reduction." },
+      { title: "Zero Security Breaches", desc: "Compliant with PCI-DSS and SOC2." },
+      { title: "4x Faster Deployments", desc: "From weeks to days." },
+    ],
+    relatedCaseStudies: [
+      { title: "SAP S/4HANA Transformation", industry: "Industrial Manufacturing", link: "#" },
+      { title: "Hyperion EPM Modernization", industry: "Financial Services", link: "#" },
+      { title: "Real-time Analytics Platform", industry: "Retail", link: "#" },
+    ],
+  };
+
+  // Helper to render tech icons (simplified)
+  const renderIcon = (icon) => {
+    switch (icon) {
+      case "aws":
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M6 6 L18 6 L18 18 L6 18 Z" strokeWidth="1.5" />
+            <circle cx="12" cy="12" r="2" fill="currentColor" />
+          </svg>
+        );
+      case "azure":
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="4" y="4" width="16" height="16" strokeWidth="1.5" />
+            <path d="M8 8 L16 16 M16 8 L8 16" strokeWidth="1.5" />
+          </svg>
+        );
+      case "k8s":
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="8" strokeWidth="1.5" />
+            <path d="M12 2 L12 6 M12 18 L12 22 M2 12 L6 12 M18 12 L22 12" strokeWidth="1.5" />
+          </svg>
+        );
+      case "tf":
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polygon points="12,2 2,7 2,17 12,22 22,17 22,7" strokeWidth="1.5" />
+          </svg>
+        );
+      case "docker":
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="4" y="10" width="3" height="4" />
+            <rect x="9" y="10" width="3" height="4" />
+            <rect x="14" y="10" width="3" height="4" />
+            <path d="M4 14 L20 14" strokeWidth="1.5" />
+            <circle cx="20" cy="12" r="2" fill="currentColor" />
+          </svg>
+        );
+      case "kafka":
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="6" r="3" strokeWidth="1.5" />
+            <circle cx="12" cy="18" r="3" strokeWidth="1.5" />
+            <circle cx="20" cy="12" r="3" strokeWidth="1.5" />
+            <circle cx="4" cy="12" r="3" strokeWidth="1.5" />
+            <line x1="12" y1="9" x2="12" y2="15" strokeWidth="1.5" />
+            <line x1="8" y1="10" x2="8" y2="14" strokeWidth="1.5" />
+            <line x1="16" y1="10" x2="16" y2="14" strokeWidth="1.5" />
+          </svg>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
     <section className="case-study">
       <style>{`
         /* ---------------------------------------------
-           GLOBAL STYLES & COSMIC BACKGROUND
+           GLOBAL & COSMIC BACKGROUND
         --------------------------------------------- */
         .case-study {
           position: relative;
@@ -103,7 +319,7 @@ export default function CloudMigrationCaseStudy() {
           overflow-x: hidden;
         }
 
-        /* Floating particles */
+        /* Floating particles (background) */
         .particle-field {
           position: absolute;
           top: 0;
@@ -138,6 +354,17 @@ export default function CloudMigrationCaseStudy() {
           z-index: 10;
         }
 
+        /* Fade-up animation on scroll */
+        .fade-up {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .fade-up.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
         /* ---------- HERO SECTION ---------- */
         .hero {
           position: relative;
@@ -148,28 +375,21 @@ export default function CloudMigrationCaseStudy() {
           background: linear-gradient(135deg, #0a2b5e, #1e3a8a, #312e81, #4c1d95);
           box-shadow: 0 30px 50px -20px rgba(0,0,0,0.4);
         }
-        .hero-animation {
+        .hero-canvas {
           position: absolute;
-          inset: 0;
-          opacity: 0.7;
-        }
-        .hero-svg-icon {
-          position: absolute;
-          width: 90px;
-          height: 90px;
-          filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
-          animation: float-hero 12s infinite alternate;
-        }
-        @keyframes float-hero {
-          0% { transform: translateY(0) translateX(0); }
-          100% { transform: translateY(-25px) translateX(15px); }
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: all; /* allow mouse interaction */
+          z-index: 1;
         }
         .hero-content {
           position: absolute;
           bottom: 60px;
           left: 60px;
           color: white;
-          z-index: 10;
+          z-index: 2;
           max-width: 700px;
         }
         .hero-tag {
@@ -183,6 +403,7 @@ export default function CloudMigrationCaseStudy() {
           letter-spacing: 1px;
           margin-bottom: 20px;
           border: 1px solid rgba(255,255,255,0.3);
+          animation: fadeInUp 0.8s ease;
         }
         .hero-title {
           font-size: 56px;
@@ -190,11 +411,40 @@ export default function CloudMigrationCaseStudy() {
           line-height: 1.1;
           margin-bottom: 16px;
           text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+          animation: fadeInUp 0.8s ease 0.1s both;
         }
         .hero-subtitle {
           font-size: 20px;
           opacity: 0.9;
           font-weight: 400;
+          animation: fadeInUp 0.8s ease 0.2s both;
+        }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scroll down indicator */
+        .scroll-down {
+          position: absolute;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 3;
+          color: white;
+          font-size: 14px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          opacity: 0.7;
+          transition: opacity 0.3s;
+          animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+          40% { transform: translateX(-50%) translateY(-10px); }
+          60% { transform: translateX(-50%) translateY(-5px); }
         }
 
         /* Section headers */
@@ -269,9 +519,9 @@ export default function CloudMigrationCaseStudy() {
           transition: all 0.3s ease;
         }
         .challenge-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 25px 35px -12px rgba(37,99,235,0.15);
-          border-color: #2563eb30;
+          transform: translateY(-6px) scale(1.02);
+          box-shadow: 0 25px 35px -12px rgba(37,99,235,0.2);
+          border-color: #2563eb;
         }
         .challenge-icon {
           width: 48px;
@@ -317,10 +567,12 @@ export default function CloudMigrationCaseStudy() {
           border-radius: 20px;
           box-shadow: 0 10px 25px -8px rgba(0,0,0,0.08);
           border: 1px solid #f1f5f9;
-          transition: transform 0.3s ease;
+          transition: all 0.3s ease;
         }
         .timeline-step:hover {
-          transform: scale(1.05);
+          transform: scale(1.05) translateY(-5px);
+          box-shadow: 0 20px 30px -10px rgba(37,99,235,0.15);
+          border-color: #2563eb;
         }
         .step-number {
           width: 50px;
@@ -380,8 +632,9 @@ export default function CloudMigrationCaseStudy() {
           border: 1px solid #e9eef3;
         }
         .arch-item:hover {
-          transform: translateY(-8px);
+          transform: translateY(-8px) rotate(2deg);
           border-color: #2563eb;
+          box-shadow: 0 25px 35px -12px rgba(37,99,235,0.2);
         }
         .arch-item svg {
           width: 40px;
@@ -392,6 +645,121 @@ export default function CloudMigrationCaseStudy() {
           font-size: 28px;
           color: #2563eb;
           font-weight: 300;
+          animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+          0% { opacity: 0.5; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.1); }
+          100% { opacity: 0.5; transform: scale(1); }
+        }
+
+        /* ---------- TECHNOLOGY STACK ---------- */
+        .tech-grid {
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          gap: 20px;
+          margin: 40px 0 80px;
+        }
+        .tech-card {
+          background: white;
+          border-radius: 20px;
+          padding: 20px;
+          text-align: center;
+          box-shadow: 0 10px 20px -8px rgba(0,0,0,0.05);
+          border: 1px solid #f0f4f9;
+          transition: all 0.3s ease;
+        }
+        .tech-card:hover {
+          transform: translateY(-5px) scale(1.02);
+          border-color: #2563eb;
+          box-shadow: 0 20px 30px -12px rgba(37,99,235,0.15);
+        }
+        .tech-icon {
+          width: 48px;
+          height: 48px;
+          margin: 0 auto 12px;
+          color: #2563eb;
+        }
+        .tech-name {
+          font-weight: 600;
+          color: #0f172a;
+        }
+
+        /* ---------- JOURNEY TIMELINE (VERTICAL) ---------- */
+        .journey {
+          background: rgba(255,255,255,0.5);
+          backdrop-filter: blur(6px);
+          border-radius: 30px;
+          padding: 40px;
+          margin-bottom: 80px;
+        }
+        .journey-step {
+          display: flex;
+          gap: 30px;
+          padding: 20px 0;
+          border-bottom: 1px dashed #cbd5e1;
+          transition: background 0.3s;
+        }
+        .journey-step:hover {
+          background: rgba(37,99,235,0.03);
+          border-radius: 12px;
+          padding-left: 15px;
+        }
+        .journey-step:last-child {
+          border-bottom: none;
+        }
+        .journey-phase {
+          width: 140px;
+          font-weight: 700;
+          color: #2563eb;
+        }
+        .journey-duration {
+          width: 100px;
+          color: #64748b;
+          font-size: 14px;
+        }
+        .journey-desc {
+          flex: 1;
+          color: #334155;
+        }
+
+        /* ---------- BENEFITS ---------- */
+        .benefits-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 25px;
+          margin: 40px 0 80px;
+        }
+        .benefit-card {
+          background: white;
+          border-radius: 24px;
+          padding: 30px 20px;
+          text-align: center;
+          box-shadow: 0 20px 30px -10px rgba(0,0,0,0.05);
+          border: 1px solid #eef2f6;
+          transition: all 0.3s ease;
+        }
+        .benefit-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 25px 35px -12px rgba(37,99,235,0.15);
+          border-color: #2563eb;
+        }
+        .benefit-number {
+          font-size: 32px;
+          font-weight: 800;
+          background: linear-gradient(145deg, #2563eb, #7c3aed);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin-bottom: 10px;
+        }
+        .benefit-label {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 8px;
+        }
+        .benefit-desc {
+          font-size: 14px;
+          color: #64748b;
         }
 
         /* ---------- RESULTS ---------- */
@@ -408,6 +776,12 @@ export default function CloudMigrationCaseStudy() {
           text-align: center;
           box-shadow: 0 20px 35px -12px rgba(0,0,0,0.05);
           border: 1px solid #f0f4f9;
+          transition: all 0.3s ease;
+        }
+        .result-card:hover {
+          transform: translateY(-5px) scale(1.02);
+          box-shadow: 0 25px 40px -15px rgba(37,99,235,0.15);
+          border-color: #2563eb;
         }
         .result-number {
           font-size: 44px;
@@ -432,6 +806,11 @@ export default function CloudMigrationCaseStudy() {
           margin-bottom: 80px;
           position: relative;
           overflow: hidden;
+          transition: transform 0.3s;
+        }
+        .testimonial:hover {
+          transform: scale(1.01);
+          box-shadow: 0 20px 30px -12px rgba(37,99,235,0.1);
         }
         .testimonial::before {
           content: "“";
@@ -457,57 +836,81 @@ export default function CloudMigrationCaseStudy() {
           color: #2563eb;
         }
 
-        /* ---------- RELATED SERVICES ---------- */
+        /* ---------- RELATED CASE STUDIES ---------- */
         .related-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 25px;
-          margin-bottom: 60px;
+          margin: 40px 0 60px;
         }
-        .service-card {
+        .related-card {
           background: white;
           border-radius: 24px;
           padding: 30px 25px;
           border: 1px solid #eef2f6;
           transition: all 0.3s ease;
+          text-decoration: none;
+          color: inherit;
+          display: block;
         }
-        .service-card:hover {
-          transform: translateY(-8px);
+        .related-card:hover {
+          transform: translateY(-8px) scale(1.02);
           box-shadow: 0 25px 35px -15px rgba(37,99,235,0.15);
           border-color: #2563eb;
         }
-        .service-icon {
-          width: 56px;
-          height: 56px;
-          background: linear-gradient(145deg, #2563eb10, #7c3aed10);
-          border-radius: 16px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 20px;
-          color: #2563eb;
-        }
-        .service-title {
+        .related-title {
           font-size: 20px;
           font-weight: 700;
-          margin-bottom: 10px;
+          margin-bottom: 8px;
           color: #0f172a;
         }
-        .service-desc {
+        .related-industry {
           font-size: 14px;
-          color: #475569;
-          line-height: 1.6;
-          margin-bottom: 20px;
+          color: #64748b;
+          margin-bottom: 16px;
         }
-        .service-link {
+        .related-link {
           font-weight: 600;
           color: #2563eb;
-          text-decoration: none;
-          border-bottom: 2px solid transparent;
-          transition: border-color 0.2s;
         }
-        .service-link:hover {
-          border-bottom-color: #2563eb;
+
+        /* ---------- CTA ---------- */
+        .cta-section {
+          background: linear-gradient(145deg, #2563eb, #7c3aed);
+          border-radius: 40px;
+          padding: 60px 40px;
+          text-align: center;
+          color: white;
+          margin-bottom: 80px;
+        }
+        .cta-title {
+          font-size: 36px;
+          font-weight: 800;
+          margin-bottom: 16px;
+        }
+        .cta-desc {
+          font-size: 18px;
+          opacity: 0.9;
+          margin-bottom: 30px;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .cta-button {
+          display: inline-block;
+          background: white;
+          color: #2563eb;
+          font-weight: 700;
+          padding: 16px 40px;
+          border-radius: 60px;
+          text-decoration: none;
+          font-size: 18px;
+          box-shadow: 0 20px 30px -10px rgba(0,0,0,0.2);
+          transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+          transform: scale(1.05) translateY(-3px);
+          box-shadow: 0 25px 35px -8px rgba(0,0,0,0.3);
         }
 
         /* ---------- BACK LINK ---------- */
@@ -538,6 +941,8 @@ export default function CloudMigrationCaseStudy() {
           .timeline::before { display: none; }
           .results-grid { grid-template-columns: repeat(2, 1fr); }
           .related-grid { grid-template-columns: repeat(2, 1fr); }
+          .tech-grid { grid-template-columns: repeat(3, 1fr); }
+          .benefits-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 768px) {
           .hero-title { font-size: 42px; }
@@ -545,8 +950,12 @@ export default function CloudMigrationCaseStudy() {
           .client-card { grid-template-columns: 1fr; }
           .challenges-grid { grid-template-columns: 1fr; }
           .related-grid { grid-template-columns: 1fr; }
+          .tech-grid { grid-template-columns: repeat(2, 1fr); }
+          .benefits-grid { grid-template-columns: 1fr; }
           .testimonial-quote { font-size: 18px; }
           .section-title { font-size: 30px; }
+          .journey-step { flex-direction: column; gap: 10px; }
+          .journey-phase, .journey-duration { width: auto; }
         }
         @media (max-width: 520px) {
           .hero-title { font-size: 32px; }
@@ -572,42 +981,28 @@ export default function CloudMigrationCaseStudy() {
         ))}
       </div>
 
-      {/* ---------- HERO ---------- */}
+      {/* ---------- HERO WITH CANVAS ---------- */}
       <div className="hero">
-        <div className="hero-animation">
-          {/* Animated SVG icons */}
-          <div className="hero-svg-icon" style={{ top: '15%', left: '10%' }}>
-            <svg viewBox="0 0 100 100" width="80" height="80">
-              <defs><linearGradient id="c1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#38bdf8"/><stop offset="100%" stopColor="#6366f1"/></linearGradient></defs>
-              <path d="M75 60 Q85 50 75 40 Q70 25 55 30 Q45 15 30 25 Q15 30 20 45 Q10 60 25 70 Q35 80 50 75 Q65 85 75 75 Q90 70 75 60Z" fill="url(#c1)" opacity="0.9"/>
-            </svg>
-          </div>
-          <div className="hero-svg-icon" style={{ top: '60%', left: '80%', animationDuration: '16s' }}>
-            <svg viewBox="0 0 100 100" width="70" height="70">
-              <polygon points="50,15 80,70 50,60 20,70" fill="#f43f5e" opacity="0.9"/>
-            </svg>
-          </div>
-          <div className="hero-svg-icon" style={{ top: '25%', left: '85%', animationDuration: '14s' }}>
-            <svg viewBox="0 0 100 100" width="60" height="60">
-              <circle cx="50" cy="50" r="35" fill="none" stroke="#8b5cf6" strokeWidth="6" strokeDasharray="6 6"/>
-            </svg>
-          </div>
-          <div className="hero-svg-icon" style={{ top: '70%', left: '20%', animationDuration: '18s' }}>
-            <svg viewBox="0 0 100 100" width="75" height="75">
-              <ellipse cx="50" cy="35" rx="30" ry="12" fill="#10b981" opacity="0.8"/>
-            </svg>
-          </div>
-        </div>
+        <canvas ref={canvasRef} className="hero-canvas" />
         <div className="hero-content">
           <span className="hero-tag">CASE STUDY</span>
           <h1 className="hero-title">Cloud Migration & Cost Optimization</h1>
           <p className="hero-subtitle">for a Global Investment Bank</p>
         </div>
+        <div className="scroll-down">
+          <span>Scroll</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+        </div>
       </div>
 
       <div className="content-wrapper">
         {/* ---------- CLIENT OVERVIEW ---------- */}
-        <div className="client-card">
+        <div
+          className="client-card fade-up"
+          ref={(el) => (animatedElements.current[0] = el)}
+        >
           <div className="client-item">
             <div className="client-label">Client</div>
             <div className="client-value">{caseData.client}</div>
@@ -627,13 +1022,18 @@ export default function CloudMigrationCaseStudy() {
         </div>
 
         {/* ---------- CHALLENGES ---------- */}
-        <div className="section-header">
+        <div className="section-header fade-up" ref={(el) => (animatedElements.current[1] = el)}>
           <h2 className="section-title">The <span>Challenge</span></h2>
           <div className="section-divider" />
         </div>
         <div className="challenges-grid">
           {caseData.challenge.map((item, idx) => (
-            <div className="challenge-card" key={idx}>
+            <div
+              className="challenge-card fade-up"
+              key={idx}
+              ref={(el) => (animatedElements.current[2 + idx] = el)}
+              style={{ transitionDelay: `${idx * 0.1}s` }}
+            >
               <div className="challenge-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
@@ -647,13 +1047,18 @@ export default function CloudMigrationCaseStudy() {
         </div>
 
         {/* ---------- SOLUTION TIMELINE ---------- */}
-        <div className="section-header">
+        <div className="section-header fade-up" ref={(el) => (animatedElements.current[6] = el)}>
           <h2 className="section-title">Our <span>Solution</span></h2>
           <div className="section-divider" />
         </div>
         <div className="timeline">
           {caseData.solutionSteps.map((step, idx) => (
-            <div className="timeline-step" key={idx}>
+            <div
+              className="timeline-step fade-up"
+              key={idx}
+              ref={(el) => (animatedElements.current[7 + idx] = el)}
+              style={{ transitionDelay: `${idx * 0.15}s` }}
+            >
               <div className="step-number">{idx + 1}</div>
               <div className="step-title">{step.title}</div>
               <div className="step-desc">{step.desc}</div>
@@ -662,7 +1067,7 @@ export default function CloudMigrationCaseStudy() {
         </div>
 
         {/* ---------- ARCHITECTURE HIGHLIGHT ---------- */}
-        <div className="architecture">
+        <div className="architecture fade-up" ref={(el) => (animatedElements.current[11] = el)}>
           <h3 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '20px' }}>Target Architecture</h3>
           <div className="arch-diagram">
             <div className="arch-item">
@@ -688,17 +1093,77 @@ export default function CloudMigrationCaseStudy() {
           <p style={{ color: '#475569', marginTop: '20px' }}>Multi‑cloud foundation with automated CI/CD and infrastructure‑as‑code.</p>
         </div>
 
+        {/* ---------- TECHNOLOGY STACK ---------- */}
+        <div className="section-header fade-up" ref={(el) => (animatedElements.current[12] = el)}>
+          <h2 className="section-title">Technology <span>Stack</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="tech-grid">
+          {caseData.techStack.map((tech, idx) => (
+            <div
+              className="tech-card fade-up"
+              key={idx}
+              ref={(el) => (animatedElements.current[13 + idx] = el)}
+              style={{ transitionDelay: `${idx * 0.1}s` }}
+            >
+              <div className="tech-icon">{renderIcon(tech.icon)}</div>
+              <div className="tech-name">{tech.name}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ---------- MIGRATION JOURNEY ---------- */}
+        <div className="section-header fade-up" ref={(el) => (animatedElements.current[19] = el)}>
+          <h2 className="section-title">Migration <span>Journey</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="journey fade-up" ref={(el) => (animatedElements.current[20] = el)}>
+          {caseData.journey.map((step, idx) => (
+            <div className="journey-step" key={idx}>
+              <div className="journey-phase">{step.phase}</div>
+              <div className="journey-duration">{step.duration}</div>
+              <div className="journey-desc">{step.desc}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ---------- KEY BENEFITS ---------- */}
+        <div className="section-header fade-up" ref={(el) => (animatedElements.current[21] = el)}>
+          <h2 className="section-title">Key <span>Benefits</span></h2>
+          <div className="section-divider" />
+        </div>
+        <div className="benefits-grid">
+          {caseData.benefits.map((benefit, idx) => (
+            <div
+              className="benefit-card fade-up"
+              key={idx}
+              ref={(el) => (animatedElements.current[22 + idx] = el)}
+              style={{ transitionDelay: `${idx * 0.1}s` }}
+            >
+              <div className="benefit-number">{benefit.title}</div>
+              <div className="benefit-desc">{benefit.desc}</div>
+            </div>
+          ))}
+        </div>
+
         {/* ---------- RESULTS ---------- */}
-        <div className="section-header">
+        <div className="section-header fade-up" ref={(el) => (animatedElements.current[26] = el)}>
           <h2 className="section-title">Key <span>Outcomes</span></h2>
           <div className="section-divider" />
         </div>
         <div className="results-grid">
           {caseData.results.map((result, idx) => (
-            <div className="result-card" key={idx}>
+            <div
+              className="result-card fade-up"
+              key={idx}
+              ref={(el) => {
+                animatedElements.current[27 + idx] = el;
+                countersRef.current[idx] = el;
+              }}
+              style={{ transitionDelay: `${idx * 0.1}s` }}
+            >
               <div
                 className="result-number"
-                ref={(el) => (countersRef.current[idx] = el)}
                 data-target={result.value}
               >
                 0{result.suffix === "%" ? "%" : ""}
@@ -709,41 +1174,37 @@ export default function CloudMigrationCaseStudy() {
         </div>
 
         {/* ---------- TESTIMONIAL ---------- */}
-        <div className="testimonial">
+        <div className="testimonial fade-up" ref={(el) => (animatedElements.current[31] = el)}>
           <div className="testimonial-quote">{caseData.testimonial.quote}</div>
           <div className="testimonial-author">— {caseData.testimonial.author}</div>
         </div>
 
-        {/* ---------- RELATED SERVICES ---------- */}
-        <div className="section-header">
-          <h2 className="section-title">Explore <span>More</span></h2>
+        {/* ---------- RELATED CASE STUDIES ---------- */}
+        <div className="section-header fade-up" ref={(el) => (animatedElements.current[32] = el)}>
+          <h2 className="section-title">Related <span>Case Studies</span></h2>
           <div className="section-divider" />
         </div>
         <div className="related-grid">
-          <div className="service-card">
-            <div className="service-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M12 22V12"/></svg>
-            </div>
-            <div className="service-title">SAP S/4HANA</div>
-            <div className="service-desc">End‑to‑end ERP transformation for global enterprises.</div>
-            <a href="#" className="service-link">Learn more →</a>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="2.18"/><path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5"/></svg>
-            </div>
-            <div className="service-title">Hyperion EPM</div>
-            <div className="service-desc">Financial close & planning modernization.</div>
-            <a href="#" className="service-link">Learn more →</a>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 0 0 0 20 15 15 0 0 0 0-20z"/><path d="M2 12h20"/></svg>
-            </div>
-            <div className="service-title">AI & Analytics</div>
-            <div className="service-desc">Predictive insights and real‑time intelligence.</div>
-            <a href="#" className="service-link">Learn more →</a>
-          </div>
+          {caseData.relatedCaseStudies.map((item, idx) => (
+            <a
+              href={item.link}
+              className="related-card fade-up"
+              key={idx}
+              ref={(el) => (animatedElements.current[33 + idx] = el)}
+              style={{ transitionDelay: `${idx * 0.15}s` }}
+            >
+              <div className="related-title">{item.title}</div>
+              <div className="related-industry">{item.industry}</div>
+              <div className="related-link">Read case study →</div>
+            </a>
+          ))}
+        </div>
+
+        {/* ---------- CALL TO ACTION ---------- */}
+        <div className="cta-section fade-up" ref={(el) => (animatedElements.current[36] = el)}>
+          <h2 className="cta-title">Ready to transform your infrastructure?</h2>
+          <p className="cta-desc">Let's discuss how we can help you achieve similar results with a tailored cloud strategy.</p>
+          <a href="/contact" className="cta-button">Talk to an expert</a>
         </div>
 
         {/* ---------- BACK LINK ---------- */}

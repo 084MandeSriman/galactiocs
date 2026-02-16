@@ -1,482 +1,428 @@
 export default function OfficesSection() {
+  const offices = [
+    {
+      name: "Dubai, UAE",
+      badge: "GLOBAL HQ",
+      icon: "🏢",
+      location: "Business Bay, Dubai",
+      country: "United Arab Emirates",
+      detail: "Strategic Leadership Hub",
+      email: "contact@galacticos.ae",
+      color: "#ec4899"
+    },
+    {
+      name: "Hyderabad, India", 
+      badge: "DELIVERY HUB",
+      icon: "💻",
+      location: "Hi-Tech City",
+      country: "Hyderabad – 500081",
+      detail: "95+ Technology Experts",
+      email: "odc@galacticos.in",
+      color: "#10b981"
+    },
+    {
+      name: "Global Network",
+      badge: "WORLDWIDE",
+      icon: "🌍",
+      location: "15+ Countries Active",
+      country: "North America · Europe · APAC",
+      detail: "Enterprise 24/7 Coverage", 
+      email: "global@galacticos.com",
+      color: "#3b82f6"
+    }
+  ];
+
   return (
     <section id="offices" className="offices-section">
       <style>{`
-        /* ---------------------------------------------
-           COSMIC BACKGROUND & GLOBAL STYLES
-        --------------------------------------------- */
+        /* ========== OFFICES SECTION – NEXT GENERATION ========== */
         .offices-section {
           position: relative;
-          padding: 90px 6%;
-          background:
-            linear-gradient(
-              rgba(255,255,255,0.92),
-              rgba(255,255,255,0.92)
-            ),
-            radial-gradient(circle at 20% 30%, rgba(37,99,235,0.03) 0%, transparent 40%),
-            radial-gradient(circle at 80% 70%, rgba(124,58,237,0.03) 0%, transparent 40%),
-            url("https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=1800&auto=format&fit=crop");
-          background-size: cover, cover, cover, cover;
-          background-position: center;
+          padding: 140px 6%;
+          background: #0a0c12;
           overflow: hidden;
-          color: #1e293b;
+          color: #fff;
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
-        /* ----- FLOATING PARTICLES (STARS) ----- */
-        .particle-field {
+        /* Dynamic particle background */
+        .offices-section::before {
+          content: '';
           position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
+          inset: 0;
+          background-image: 
+            radial-gradient(circle at 10% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 90% 30%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
+            radial-gradient(circle at 30% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 70% 60%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+          filter: blur(80px);
+          animation: bgDrift 25s ease-in-out infinite alternate;
           z-index: 1;
         }
 
+        @keyframes bgDrift {
+          0% { opacity: 0.3; transform: scale(1); }
+          100% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        /* Floating grid lines */
+        .offices-section::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: 
+            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+          background-size: 60px 60px;
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        /* Floating particles */
         .particle {
           position: absolute;
           width: 3px;
           height: 3px;
-          background: rgba(37,99,235,0.3);
+          background: rgba(255,255,255,0.3);
           border-radius: 50%;
-          box-shadow: 0 0 6px rgba(37,99,235,0.3);
-          animation: float-particle 20s infinite linear;
+          filter: blur(1px);
+          animation: particleFloat 10s infinite linear;
+          z-index: 3;
+        }
+        .particle:nth-child(1) { top: 15%; left: 10%; width: 5px; height: 5px; }
+        .particle:nth-child(2) { top: 75%; left: 85%; width: 7px; height: 7px; animation-duration: 14s; }
+        .particle:nth-child(3) { top: 40%; left: 20%; width: 4px; height: 4px; animation-duration: 12s; }
+        .particle:nth-child(4) { top: 85%; left: 15%; width: 6px; height: 6px; animation-duration: 16s; }
+        .particle:nth-child(5) { top: 25%; left: 70%; width: 4px; height: 4px; animation-duration: 18s; }
+        .particle:nth-child(6) { top: 60%; left: 40%; width: 5px; height: 5px; animation-duration: 13s; }
+        @keyframes particleFloat {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          100% { transform: translate(30px, -30px) rotate(360deg); }
         }
 
-        @keyframes float-particle {
-          0% { transform: translateY(0) translateX(0); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
-        }
-
-        /* ----- FAINT WORLD MAP (SVG PATTERN) ----- */
-        .world-map-bg {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 120%;
-          height: 120%;
-          transform: translate(-50%, -50%);
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 500' opacity='0.05'%3E%3Cpath fill='%232563eb' d='M...' /%3E%3C/svg%3E");
-          background-size: contain;
-          background-repeat: no-repeat;
-          background-position: center;
-          pointer-events: none;
-          z-index: 0;
-          opacity: 0.4;
-          animation: breathe 8s infinite ease-in-out;
-        }
-
-        @keyframes breathe {
-          0%, 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
-          50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.02); }
-        }
-
-        /* ----- HEADER ----- */
+        /* Header */
         .offices-header {
-          text-align: center;
-          max-width: 780px;
-          margin: 0 auto 60px;
           position: relative;
-          z-index: 15;
-        }
-
-        .offices-title {
-          font-size: 44px;
-          font-weight: 800;
-          letter-spacing: -0.01em;
-          margin-bottom: 16px;
-          color: #0f172a;
-          line-height: 1.2;
-        }
-
-        .offices-title span {
-          background: linear-gradient(145deg, #2563eb, #7c3aed);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .offices-subtitle {
-          font-size: 17px;
-          color: #475569;
-          line-height: 1.7;
-          font-weight: 400;
-          max-width: 600px;
+          z-index: 20;
+          text-align: center;
+          margin-bottom: 100px;
+          max-width: 900px;
           margin-left: auto;
           margin-right: auto;
         }
 
-        /* ----- OFFICES GRID ----- */
+        .offices-title {
+          font-size: clamp(48px, 10vw, 80px);
+          font-weight: 900;
+          letter-spacing: -0.02em;
+          margin-bottom: 24px;
+          background: linear-gradient(135deg, #ffffff, #f0f0ff, #d0d0ff);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          line-height: 1.1;
+          text-shadow: 0 0 40px rgba(160, 160, 255, 0.5);
+          animation: titleGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+          0% { text-shadow: 0 0 20px rgba(160,160,255,0.3); }
+          100% { text-shadow: 0 0 80px rgba(160,160,255,0.8); }
+        }
+
+        .offices-title span {
+          background: linear-gradient(135deg, #ec4899, #10b981, #3b82f6);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .offices-title::after {
+          content: '';
+          display: block;
+          width: 120px;
+          height: 4px;
+          background: linear-gradient(90deg, #ec4899, #10b981, #3b82f6);
+          margin: 20px auto 0;
+          border-radius: 4px;
+          box-shadow: 0 0 30px rgba(255,255,255,0.5);
+        }
+
+        .offices-subtitle {
+          font-size: 20px;
+          color: #ccc;
+          line-height: 1.8;
+          font-weight: 300;
+          max-width: 700px;
+          margin: 0 auto;
+        }
+
+        /* Cards grid – asymmetrical layout */
         .offices-grid {
           max-width: 1300px;
           margin: 0 auto;
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 28px;
+          gap: 50px;
           position: relative;
-          z-index: 20;
+          z-index: 30;
+          perspective: 2000px;
         }
 
-        /* ----- COSMIC CONNECTION ARCS (between cards) ----- */
-        .connection-arcs {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: 5;
-        }
-
-        .arc {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 180px;
-          height: 100px;
-          border: 1.5px dashed rgba(37,99,235,0.2);
-          border-radius: 50%;
-          transform-origin: center;
-          opacity: 0.6;
-        }
-
-        .arc1 {
-          transform: translate(-50%, -50%) rotate(-10deg);
-          animation: orbit-slow 24s infinite linear;
-        }
-
-        .arc2 {
-          width: 240px;
-          height: 130px;
-          border-color: rgba(124,58,237,0.2);
-          transform: translate(-50%, -50%) rotate(15deg);
-          animation: orbit-slow 30s infinite reverse;
-        }
-
-        @keyframes orbit-slow {
-          0% { transform: translate(-50%, -50%) rotate(-10deg); }
-          100% { transform: translate(-50%, -50%) rotate(350deg); }
-        }
-
-        /* ----- OFFICE CARD (GLASS / COSMIC) ----- */
+        /* Card – 3D floating glass */
         .office-card {
-          background: rgba(255,255,255,0.75);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          border-radius: 24px;
-          padding: 32px 28px;
-          border: 1px solid rgba(255,255,255,0.6);
-          box-shadow: 
-            0 20px 35px -10px rgba(0,0,0,0.05),
-            inset 0 1px 4px rgba(255,255,255,0.8);
-          transition: all 0.35s cubic-bezier(0.2,0,0,1);
           position: relative;
+          background: rgba(20, 25, 35, 0.7);
+          backdrop-filter: blur(12px);
+          border-radius: 40px;
+          border: 1px solid rgba(255,255,255,0.1);
+          box-shadow: 0 50px 100px -30px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05) inset;
+          padding: 40px 30px;
+          transform-style: preserve-3d;
+          transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s;
+          cursor: pointer;
           overflow: hidden;
           display: flex;
           flex-direction: column;
+          opacity: 0;
+          animation: cardAppear 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
 
-        /* Gradient border on hover */
-        .office-card::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: 24px;
-          padding: 2px;
-          background: linear-gradient(145deg, #2563eb, #7c3aed);
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          opacity: 0;
-          transition: opacity 0.4s ease;
+        .office-card:nth-child(1) { animation-delay: 0.1s; }
+        .office-card:nth-child(2) { animation-delay: 0.2s; }
+        .office-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes cardAppear {
+          0% { opacity: 0; transform: translateY(60px) rotateX(10deg) scale(0.95); }
+          100% { opacity: 1; transform: translateY(0) rotateX(0) scale(1); }
         }
 
         .office-card:hover {
-          transform: translateY(-10px) scale(1.02);
-          box-shadow: 0 30px 50px -12px rgba(37,99,235,0.2);
-          background: rgba(255,255,255,0.9);
+          transform: translateY(-20px) rotateX(3deg) rotateY(3deg) scale(1.02);
+          box-shadow: 
+            0 80px 160px -30px rgba(0,0,0,0.9),
+            0 0 0 1px rgba(255,255,255,0.2) inset,
+            0 0 60px var(--glow-color);
         }
 
+        /* Gradient border */
+        .office-card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 40px;
+          padding: 2px;
+          background: linear-gradient(145deg, rgba(255,255,255,0.4), rgba(255,255,255,0.02));
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.5s;
+        }
         .office-card:hover::before {
           opacity: 1;
         }
 
-        /* Satellite ring (rotating) – appears on hover */
-        .satellite-ring {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 180px;
-          height: 180px;
-          border: 1px solid rgba(37,99,235,0.15);
-          border-radius: 50%;
-          transform: translate(-50%, -50%) scale(0);
-          transition: transform 0.6s ease;
-          pointer-events: none;
-          border-top-color: #2563eb;
-          border-bottom-color: #7c3aed;
-          border-left-color: transparent;
-          border-right-color: transparent;
+        /* Header section inside card */
+        .office-header {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          margin-bottom: 30px;
+          transform: translateZ(20px);
+          transition: transform 0.4s;
+        }
+        .office-card:hover .office-header {
+          transform: translateZ(40px);
         }
 
-        .office-card:hover .satellite-ring {
-          transform: translate(-50%, -50%) scale(1);
-          animation: spin-ring 8s infinite linear;
-        }
-
-        @keyframes spin-ring {
-          0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-          100% { transform: translate(-50%, -50%) scale(1) rotate(360deg); }
-        }
-
-        /* Office icon (SVG location marker) */
         .office-icon {
-          width: 48px;
-          height: 48px;
-          margin-bottom: 20px;
-          color: #2563eb;
-          animation: float-icon 5s infinite ease-in-out;
-          filter: drop-shadow(0 6px 10px rgba(37,99,235,0.15));
+          width: 70px;
+          height: 70px;
+          background: linear-gradient(135deg, var(--icon-bg), var(--icon-bg-end));
+          border-radius: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 30px;
+          box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+          border: 1px solid rgba(255,255,255,0.2);
+          transition: all 0.4s;
+        }
+        .office-card:hover .office-icon {
+          transform: scale(1.1) rotate(10deg);
+          box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
-        @keyframes float-icon {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
-        }
-
-        .office-title {
-          font-size: 16px;
+        .office-badge {
+          padding: 8px 20px;
+          background: rgba(0,0,0,0.5);
+          backdrop-filter: blur(10px);
+          border-radius: 40px;
+          font-size: 13px;
           font-weight: 700;
-          letter-spacing: 1.2px;
-          margin-bottom: 16px;
-          color: #0f172a;
+          letter-spacing: 1px;
           text-transform: uppercase;
-          display: flex;
-          align-items: center;
-          gap: 8px;
+          border: 1px solid rgba(255,255,255,0.15);
+          color: white;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
-        .office-details {
-          font-size: 15px;
-          line-height: 1.7;
-          color: #334155;
-          margin-bottom: 20px;
+        .office-name {
+          font-size: 32px;
+          font-weight: 800;
+          margin: 0 0 25px 0;
+          color: white;
+          text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+          transform: translateZ(20px);
+          transition: transform 0.4s;
+        }
+        .office-card:hover .office-name {
+          transform: translateZ(40px);
+        }
+
+        .office-info {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          margin-bottom: 30px;
+          color: rgba(255,255,255,0.9);
+          font-size: 16px;
+          line-height: 1.6;
           flex-grow: 1;
+          transform: translateZ(15px);
+          transition: transform 0.4s;
+        }
+        .office-card:hover .office-info {
+          transform: translateZ(30px);
         }
 
-        .office-details p {
-          margin-bottom: 6px;
-          display: flex;
-          align-items: baseline;
-          gap: 8px;
-        }
-
-        .office-contact {
-          margin-top: auto;
-          border-top: 1px solid rgba(203,213,225,0.6);
-          padding-top: 18px;
-          font-size: 14px;
-          color: #2563eb;
-          font-weight: 500;
+        .office-info div {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
+          padding: 8px 0;
+          border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+        .office-info div:last-child {
+          border-bottom: none;
         }
 
-        .contact-icon {
-          width: 18px;
-          height: 18px;
-          opacity: 0.7;
+        .office-cta {
+          transform: translateZ(25px);
+          transition: transform 0.4s;
+        }
+        .office-card:hover .office-cta {
+          transform: translateZ(50px);
         }
 
-        /* ----- RESPONSIVE (fine-tuned) ----- */
-        @media (max-width: 1200px) {
-          .offices-section { padding: 80px 5%; }
-          .offices-title { font-size: 40px; }
-          .offices-grid { gap: 22px; }
+        .cta-button {
+          display: inline-flex;
+          align-items: center;
+          gap: 12px;
+          padding: 18px 28px;
+          background: rgba(255,255,255,0.1);
+          backdrop-filter: blur(10px);
+          color: white;
+          text-decoration: none;
+          border-radius: 50px;
+          font-weight: 600;
+          font-size: 16px;
+          border: 1px solid rgba(255,255,255,0.2);
+          box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+          transition: all 0.4s;
+          width: 100%;
+          justify-content: center;
         }
 
-        @media (max-width: 1024px) {
-          .offices-grid { grid-template-columns: repeat(2, 1fr); }
-          .offices-title { font-size: 36px; }
-          .offices-subtitle { font-size: 16px; }
+        .cta-button:hover {
+          background: rgba(255,255,255,0.2);
+          border-color: var(--glow-color);
+          box-shadow: 0 20px 50px var(--glow-color);
+          transform: translateY(-3px);
         }
 
+        .cta-icon {
+          width: 22px;
+          height: 22px;
+          transition: transform 0.3s;
+        }
+        .cta-button:hover .cta-icon {
+          transform: translateX(6px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+          .offices-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+          }
+        }
         @media (max-width: 768px) {
-          .offices-section { padding: 60px 4%; }
-          .offices-title { font-size: 32px; }
-          .offices-subtitle { font-size: 15px; }
-          .offices-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
-          .office-card { padding: 24px; }
-          .office-title { font-size: 14px; }
-          .office-details { font-size: 14px; }
+          .offices-section { padding: 100px 4%; }
+          .offices-grid {
+            grid-template-columns: 1fr;
+            max-width: 500px;
+            margin: 0 auto;
+          }
+          .office-card { padding: 35px 25px; }
+          .office-name { font-size: 28px; }
         }
-
-        @media (max-width: 640px) {
-          .offices-section { padding: 50px 3%; }
-          .offices-title { font-size: 28px; }
-          .offices-subtitle { font-size: 14px; }
-          .offices-grid { grid-template-columns: 1fr; gap: 20px; }
-          .office-card { padding: 28px; }
-          .satellite-ring { display: none; } /* performance on small devices */
-        }
-
         @media (max-width: 480px) {
-          .offices-title { font-size: 24px; }
-          .offices-subtitle { font-size: 13px; }
-          .office-card { padding: 22px; }
-          .office-icon { width: 40px; height: 40px; }
-          .office-title { font-size: 13px; }
-          .office-details { font-size: 13px; }
-          .office-contact { font-size: 12px; }
-        }
-
-        @media (max-width: 360px) {
-          .offices-title { font-size: 22px; }
-          .offices-subtitle { font-size: 12px; }
-          .office-card { padding: 18px; }
+          .office-icon { width: 60px; height: 60px; font-size: 26px; }
+          .office-header { gap: 15px; }
         }
       `}</style>
 
-      {/* ---------- COSMIC BACKGROUND ---------- */}
-      <div className="world-map-bg" />
-      <div className="particle-field">
-        {[...Array(28)].map((_, i) => (
-          <div
-            key={i}
-            className="particle"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 15}s`,
-              width: `${Math.random() * 4 + 2}px`,
-              height: `${Math.random() * 4 + 2}px`,
-              background: `rgba(${Math.random() * 100 + 55}, ${Math.random() * 100 + 55}, 255, ${Math.random() * 0.4 + 0.2})`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Particles */}
+      <div className="particle"></div>
+      <div className="particle"></div>
+      <div className="particle"></div>
+      <div className="particle"></div>
+      <div className="particle"></div>
+      <div className="particle"></div>
 
-      {/* ---------- ORBITAL CONNECTION ARCS ---------- */}
-      <div className="connection-arcs">
-        <div className="arc arc1" />
-        <div className="arc arc2" />
-      </div>
-
-      {/* ---------- HEADER ---------- */}
       <div className="offices-header">
         <h2 className="offices-title">
-          Our <span>Global</span> Constellation
+          Our <span>Global Presence</span>
         </h2>
         <p className="offices-subtitle">
-          Strategically positioned delivery hubs and headquarters, engineered for
-          seamless collaboration across every time zone.
+          Strategic delivery centers designed for seamless collaboration across every time zone and business need
         </p>
       </div>
 
-      {/* ---------- OFFICES GRID ---------- */}
       <div className="offices-grid">
-        {/* 1. DUBAI – HEADQUARTERS */}
-        <div className="office-card">
-          <div className="satellite-ring" />
-          <svg
-            className="office-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {offices.map((office) => (
+          <div
+            className="office-card"
+            key={office.name}
+            style={{
+              '--glow-color': office.color,
+              '--icon-bg': office.color + '30',
+              '--icon-bg-end': office.color + '60',
+            }}
           >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 2 L12 6 M12 18 L12 22 M2 12 L6 12 M18 12 L22 12" />
-            <circle cx="12" cy="12" r="4" fill="currentColor" fillOpacity="0.2" />
-          </svg>
-          <div className="office-title">
-            <span style={{ background: 'linear-gradient(145deg, #2563eb, #1e40af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              DUBAI · UAE
-            </span>
+            <div className="office-header">
+              <div className="office-icon">{office.icon}</div>
+              <div className="office-badge">{office.badge}</div>
+            </div>
+            <h3 className="office-name">{office.name}</h3>
+            <div className="office-info">
+              <div>📍 {office.location}</div>
+              <div>🌎 {office.country}</div>
+              <div>✨ {office.detail}</div>
+            </div>
+            <div className="office-cta">
+              <a href={`mailto:${office.email}`} className="cta-button">
+                <svg className="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                {office.email}
+              </a>
+            </div>
           </div>
-          <div className="office-details">
-            <p>📍 Business Bay</p>
-            <p>Dubai, United Arab Emirates</p>
-            <p style={{ marginTop: '12px' }}>🌍 Global Headquarters</p>
-          </div>
-          <div className="office-contact">
-            <svg className="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <path d="M22 7L12 13 2 7" />
-            </svg>
-            contact@galacticos.ae
-          </div>
-        </div>
-
-        {/* 2. INDIA – OFFSHORE DELIVERY CENTER */}
-        <div className="office-card">
-          <div className="satellite-ring" />
-          <svg
-            className="office-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          >
-            <rect x="2" y="4" width="20" height="16" rx="2" />
-            <path d="M12 4 L12 20 M2 9 L22 9 M2 15 L22 15" />
-          </svg>
-          <div className="office-title">
-            <span style={{ background: 'linear-gradient(145deg, #7c3aed, #6d28d9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              HYDERABAD · INDIA
-            </span>
-          </div>
-          <div className="office-details">
-            <p>📍 Offshore Delivery Center</p>
-            <p>Hi‑Tech City, Hyderabad – 500 081</p>
-            <p style={{ marginTop: '12px' }}>⚡ 95+ professionals, 30+ certified</p>
-          </div>
-          <div className="office-contact">
-            <svg className="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <path d="M22 7L12 13 2 7" />
-            </svg>
-            odc@galacticos.in
-          </div>
-        </div>
-
-        {/* 3. GLOBAL DELIVERY NETWORK */}
-        <div className="office-card">
-          <div className="satellite-ring" />
-          <svg
-            className="office-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          >
-            <circle cx="12" cy="12" r="8" />
-            <path d="M12 2 L12 4 M12 20 L12 22 M2 12 L4 12 M20 12 L22 12" />
-            <path d="M4.5 4.5 L6 6 M18 18 L19.5 19.5 M4.5 19.5 L6 18 M18 6 L19.5 4.5" />
-          </svg>
-          <div className="office-title">
-            <span style={{ background: 'linear-gradient(145deg, #10b981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              WORLDWIDE · PRESENCE
-            </span>
-          </div>
-          <div className="office-details">
-            <p>🌐 North America · Europe · APAC</p>
-            <p>Client delivery across 15+ countries</p>
-            <p style={{ marginTop: '12px' }}>🚀 24/7 follow‑the‑sun support</p>
-          </div>
-          <div className="office-contact">
-            <svg className="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8 10a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.574 2.81.7A2 2 0 0122 16.92z" />
-            </svg>
-            global@galacticos.com
-          </div>
-        </div>
+        ))}
       </div>
     </section>
   );
